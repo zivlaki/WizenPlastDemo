@@ -14,32 +14,53 @@
     />
     <style>
       :root {
-        --bg: #0d0f12;
-        --bg2: #13161b;
-        --bg3: #1a1e26;
-        --bg4: #22273200;
-        --panel: #181c23;
-        --panel2: #1e2330;
-        --border: #2a3040;
-        --border2: #38465a;
+        --bg: #0b0d10;
+        --bg2: #11151b;
+        --bg3: #161b22;
+
+        --panel: #141922;
+        --panel2: #1a2130;
+
+        --border: #2a3342;
+        --border2: #3a465a;
+
         --accent: #f5820a;
-        --accent2: #ffaa44;
-        --accent-dim: rgba(245, 130, 10, 0.12);
-        --accent-glow: rgba(245, 130, 10, 0.25);
-        --blue: #3a8ef6;
-        --blue-dim: rgba(58, 142, 246, 0.12);
-        --green: #22c97a;
-        --green-dim: rgba(34, 201, 122, 0.12);
-        --red: #f04060;
-        --red-dim: rgba(240, 64, 96, 0.12);
-        --yellow: #f5c518;
-        --yellow-dim: rgba(245, 197, 24, 0.12);
-        --text: #d8e0ec;
-        --text2: #8a9ab8;
-        --text3: #4a5870;
+        --accent2: #ffb15c;
+
+        --accent-dim: rgba(245, 130, 10, 0.1);
+        --accent-glow: rgba(245, 130, 10, 0.18);
+
+        --blue: #4aa3ff;
+        --green: #2bd97f;
+        --red: #ff4d6d;
+        --yellow: #ffd54a;
+
+        /* TEXT (MAIN CHANGE) */
+        --text: #ffffff;
+        --text2: rgba(255, 255, 255, 0.75);
+        --text3: rgba(255, 255, 255, 0.45);
+
         --mono: "Share Tech Mono", monospace;
         --head: "Rajdhani", sans-serif;
         --body: "Exo 2", sans-serif;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--body);
+        font-size: 15px;
+        line-height: 1.5;
+        letter-spacing: 0.2px;
+        overflow: hidden;
+      }
+
+      /* Improve rendering everywhere */
+      * {
+        box-sizing: border-box;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
       * {
         box-sizing: border-box;
