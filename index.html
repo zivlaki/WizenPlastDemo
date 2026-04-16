@@ -3,203 +3,229 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plastic Factory Dashboard</title>
+    <title>Plastic Factory Demo</title>
 
-    <!-- React -->
+    <!-- Jekyll-like minimal theme styling -->
+    <style>
+      body {
+        font-family: Arial;
+        margin: 0;
+        background: #f5f5f5;
+      }
+      header {
+        background: #2c3e50;
+        color: white;
+        padding: 1rem;
+      }
+      nav button {
+        margin-right: 10px;
+      }
+      .container {
+        padding: 20px;
+      }
+      .card {
+        background: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th,
+      td {
+        padding: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+      button {
+        padding: 6px 12px;
+        cursor: pointer;
+      }
+      input {
+        padding: 5px;
+        margin: 5px 0;
+        width: 100%;
+      }
+    </style>
+
+    <!-- React CDN -->
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
 
-    <!-- Babel for JSX -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- jsPDF for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </head>
-
-  <body style="margin: 0; font-family: sans-serif">
+  <body>
     <div id="root"></div>
 
     <script type="text/babel">
       const { useState } = React;
 
-      function App() {
-        const [tab, setTab] = useState("dashboard");
-
+      function Navbar({ setPage }) {
         return (
-          <div>
-            <nav
-              style={{
-                display: "flex",
-                gap: "10px",
-                padding: "10px",
-                background: "#222",
-              }}
-            >
-              <button onClick={() => setTab("dashboard")}>Dashboard</button>
-              <button onClick={() => setTab("calculations")}>
-                Calculations
-              </button>
-              <button onClick={() => setTab("machines")}>Machines</button>
+          <header>
+            <h2>Plastic Factory</h2>
+            <nav>
+              <button onClick={() => setPage("home")}>Home</button>
+              <button onClick={() => setPage("dashboard")}>Dashboard</button>
+              <button onClick={() => setPage("machines")}>Machines</button>
+              <button onClick={() => setPage("calc")}>Calculations</button>
             </nav>
+          </header>
+        );
+      }
 
-            <div style={{ padding: "20px" }}>
-              {tab === "dashboard" && <Dashboard />}
-              {tab === "calculations" && <Calculations />}
-              {tab === "machines" && <Machines />}
-            </div>
-          </div>
+      function Home() {
+        return (
+          <div className="card">Welcome to the Plastic Factory System</div>
         );
       }
 
       function Dashboard() {
         return (
           <div>
-            <h1>Factory Dashboard</h1>
-            <p>Production status overview (demo)</p>
-            <ul>
-              <li>Machines running: 12</li>
-              <li>Active jobs: 5</li>
-              <li>Output today: 3,200 units</li>
-            </ul>
+            <div className="card">Machine Status: Running</div>
+            <div className="card">Orders Today: 24</div>
+            <div className="card">Inventory Level: Stable</div>
+          </div>
+        );
+      }
+
+      function Machines({ setSelected }) {
+        const machines = [
+          { id: 1, name: "Extruder X1", status: "Running", power: "220kW" },
+          { id: 2, name: "Molder M2", status: "Stopped", power: "180kW" },
+        ];
+
+        return (
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Power</th>
+              </tr>
+            </thead>
+            <tbody>
+              {machines.map((m) => (
+                <tr key={m.id} onClick={() => setSelected(m)}>
+                  <td>{m.name}</td>
+                  <td>{m.status}</td>
+                  <td>{m.power}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        );
+      }
+
+      function MachineDetail({ machine, goBack }) {
+        if (!machine) return null;
+        return (
+          <div className="card">
+            <h3>{machine.name}</h3>
+            <p>Status: {machine.status}</p>
+            <p>Power: {machine.power}</p>
+            <button onClick={() => alert("Started")}>Start</button>
+            <button onClick={() => alert("Stopped")}>Stop</button>
+            <button onClick={goBack}>Back</button>
           </div>
         );
       }
 
       function Calculations() {
         const [selected, setSelected] = useState(null);
-
-        return (
-          <div>
-            <h1>Calculations</h1>
-
-            {!selected && (
-              <div>
-                <button onClick={() => setSelected("cycle")}>Cycle Time</button>
-                <button onClick={() => setSelected("material")}>
-                  Material Usage
-                </button>
-              </div>
-            )}
-
-            {selected === "cycle" && (
-              <CycleCalc goBack={() => setSelected(null)} />
-            )}
-            {selected === "material" && (
-              <MaterialCalc goBack={() => setSelected(null)} />
-            )}
-          </div>
-        );
-      }
-
-      function CycleCalc({ goBack }) {
-        const [time, setTime] = useState(0);
-        const [output, setOutput] = useState(null);
-
-        return (
-          <div>
-            <h2>Cycle Time Calculator</h2>
-            <input
-              type="number"
-              placeholder="Cycle time (seconds)"
-              onChange={(e) => setTime(e.target.value)}
-            />
-            <button onClick={() => setOutput(3600 / time)}>
-              Calculate / hour
-            </button>
-
-            {output && <p>Output per hour: {output.toFixed(2)}</p>}
-
-            <button onClick={goBack}>Back</button>
-          </div>
-        );
-      }
-
-      function MaterialCalc({ goBack }) {
-        const [weight, setWeight] = useState(0);
-        const [units, setUnits] = useState(0);
         const [result, setResult] = useState(null);
 
-        return (
-          <div>
-            <h2>Material Usage</h2>
-
-            <input
-              type="number"
-              placeholder="Weight per unit (g)"
-              onChange={(e) => setWeight(e.target.value)}
-            />
-
-            <input
-              type="number"
-              placeholder="Units"
-              onChange={(e) => setUnits(e.target.value)}
-            />
-
-            <button onClick={() => setResult((weight * units) / 1000)}>
-              Calculate kg
-            </button>
-
-            {result && <p>Total material: {result.toFixed(2)} kg</p>}
-
-            <button onClick={goBack}>Back</button>
-          </div>
-        );
-      }
-
-      function Machines() {
-        const [open, setOpen] = useState(null);
-
-        const machines = [
+        const formulas = [
           {
-            id: 1,
-            name: "Injection Molder A",
-            status: "Running",
-            details: "Temp: 220°C, Pressure: 120 bar",
+            name: "Volume",
+            calc: (a, b, c) => a * b * c,
+            fields: ["Length", "Width", "Height"],
           },
           {
-            id: 2,
-            name: "Extruder B",
-            status: "Idle",
-            details: "Temp: 180°C, Speed: 60 rpm",
-          },
-          {
-            id: 3,
-            name: "Blow Molder C",
-            status: "Maintenance",
-            details: "Next service: 2 days",
+            name: "Density",
+            calc: (m, v) => m / v,
+            fields: ["Mass", "Volume"],
           },
         ];
 
-        return (
-          <div>
-            <h1>Machines</h1>
+        function handleSubmit(e, formula) {
+          e.preventDefault();
+          const data = new FormData(e.target);
+          const values = Array.from(data.values()).map(Number);
+          const res = formula.calc(...values);
+          setResult(res);
+        }
 
-            {machines.map((m) => (
-              <div
-                key={m.id}
-                style={{
-                  border: "1px solid #ccc",
-                  margin: "10px 0",
-                  padding: "10px",
-                }}
-              >
-                <div
-                  onClick={() => setOpen(open === m.id ? null : m.id)}
-                  style={{ cursor: "pointer" }}
-                >
-                  <strong>{m.name}</strong> - {m.status}
+        function savePDF() {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          doc.text(`Result: ${result}`, 10, 10);
+          doc.save("calculation.pdf");
+        }
+
+        if (!selected) {
+          return (
+            <div>
+              {formulas.map((f) => (
+                <div className="card" key={f.name}>
+                  <button onClick={() => setSelected(f)}>{f.name}</button>
                 </div>
+              ))}
+            </div>
+          );
+        }
 
-                {open === m.id && (
-                  <div style={{ marginTop: "10px" }}>
-                    <p>{m.details}</p>
-                  </div>
-                )}
+        return (
+          <div className="card">
+            <h3>{selected.name}</h3>
+            <form onSubmit={(e) => handleSubmit(e, selected)}>
+              {selected.fields.map((f) => (
+                <input key={f} name={f} placeholder={f} required />
+              ))}
+              <button type="submit">Calculate</button>
+            </form>
+            {result !== null && (
+              <div>
+                <h4>Result: {result}</h4>
+                <button onClick={savePDF}>Save PDF</button>
               </div>
-            ))}
+            )}
+            <button onClick={() => setSelected(null)}>Back</button>
           </div>
         );
       }
 
-      const root = ReactDOM.createRoot(document.getElementById("root"));
-      root.render(<App />);
+      function App() {
+        const [page, setPage] = useState("home");
+        const [selectedMachine, setSelectedMachine] = useState(null);
+
+        return (
+          <div>
+            <Navbar setPage={setPage} />
+            <div className="container">
+              {page === "home" && <Home />}
+              {page === "dashboard" && <Dashboard />}
+              {page === "machines" &&
+                (selectedMachine ? (
+                  <MachineDetail
+                    machine={selectedMachine}
+                    goBack={() => setSelectedMachine(null)}
+                  />
+                ) : (
+                  <Machines setSelected={setSelectedMachine} />
+                ))}
+              {page === "calc" && <Calculations />}
+            </div>
+          </div>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
     </script>
   </body>
 </html>
