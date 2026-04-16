@@ -3,224 +3,4104 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plastic Factory Demo</title>
-
-    <!-- Jekyll-like minimal theme styling -->
+    <title>PolyCore — Plastics Management System</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,300&display=swap"
+      rel="stylesheet"
+    />
     <style>
-      body {
-        font-family: Arial;
+      :root {
+        --bg: #0d0f12;
+        --bg2: #13161b;
+        --bg3: #1a1e26;
+        --bg4: #22273200;
+        --panel: #181c23;
+        --panel2: #1e2330;
+        --border: #2a3040;
+        --border2: #38465a;
+        --accent: #f5820a;
+        --accent2: #ffaa44;
+        --accent-dim: rgba(245, 130, 10, 0.12);
+        --accent-glow: rgba(245, 130, 10, 0.25);
+        --blue: #3a8ef6;
+        --blue-dim: rgba(58, 142, 246, 0.12);
+        --green: #22c97a;
+        --green-dim: rgba(34, 201, 122, 0.12);
+        --red: #f04060;
+        --red-dim: rgba(240, 64, 96, 0.12);
+        --yellow: #f5c518;
+        --yellow-dim: rgba(245, 197, 24, 0.12);
+        --text: #d8e0ec;
+        --text2: #8a9ab8;
+        --text3: #4a5870;
+        --mono: "Share Tech Mono", monospace;
+        --head: "Rajdhani", sans-serif;
+        --body: "Exo 2", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
         margin: 0;
-        background: #f5f5f5;
+        padding: 0;
       }
-      header {
-        background: #2c3e50;
-        color: white;
-        padding: 1rem;
+      html,
+      body,
+      #root {
+        height: 100%;
       }
-      nav button {
-        margin-right: 10px;
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: var(--body);
+        overflow: hidden;
       }
-      .container {
-        padding: 20px;
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
       }
+      ::-webkit-scrollbar-track {
+        background: var(--bg2);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border2);
+        border-radius: 3px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: var(--accent);
+      }
+
+      /* Layout */
+      .app {
+        display: flex;
+        height: 100vh;
+      }
+      .sidebar {
+        width: 220px;
+        min-width: 220px;
+        background: var(--panel);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        position: relative;
+        overflow: hidden;
+      }
+      .sidebar::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: linear-gradient(
+          90deg,
+          var(--accent),
+          var(--blue),
+          transparent
+        );
+      }
+      .sidebar-logo {
+        padding: 22px 20px 18px;
+        border-bottom: 1px solid var(--border);
+      }
+      .sidebar-logo .brand {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 22px;
+        letter-spacing: 3px;
+        color: var(--accent);
+        text-transform: uppercase;
+      }
+      .sidebar-logo .sub {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        letter-spacing: 2px;
+        margin-top: 3px;
+        text-transform: uppercase;
+      }
+      .sidebar-nav {
+        flex: 1;
+        padding: 12px 0;
+        overflow-y: auto;
+      }
+      .nav-section-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        letter-spacing: 2px;
+        padding: 12px 20px 6px;
+        text-transform: uppercase;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 9px 20px;
+        cursor: pointer;
+        border-left: 2px solid transparent;
+        transition: all 0.15s;
+        font-family: var(--head);
+        font-weight: 500;
+        font-size: 14px;
+        letter-spacing: 1px;
+        color: var(--text2);
+        text-transform: uppercase;
+        user-select: none;
+      }
+      .nav-item:hover {
+        background: rgba(255, 255, 255, 0.03);
+        color: var(--text);
+      }
+      .nav-item.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: var(--accent-dim);
+      }
+      .nav-item .icon {
+        font-size: 16px;
+        width: 20px;
+        text-align: center;
+      }
+      .sidebar-footer {
+        padding: 14px 20px;
+        border-top: 1px solid var(--border);
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+      }
+      .status-dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--green);
+        margin-right: 6px;
+        box-shadow: 0 0 6px var(--green);
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.4;
+        }
+      }
+
+      /* Main content */
+      .main {
+        flex: 1;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .topbar {
+        height: 52px;
+        background: var(--panel);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 28px;
+        flex-shrink: 0;
+      }
+      .topbar-title {
+        font-family: var(--head);
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .topbar-time {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .topbar-badge {
+        background: var(--accent);
+        color: #000;
+        font-family: var(--mono);
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 2px;
+        font-weight: bold;
+      }
+      .content {
+        flex: 1;
+        overflow-y: auto;
+        padding: 28px;
+      }
+
+      /* Cards */
       .card {
-        background: white;
-        padding: 15px;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 20px;
+        position: relative;
+        overflow: hidden;
       }
-      table {
+      .card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, var(--accent), transparent);
+        opacity: 0.5;
+      }
+      .card-title {
+        font-family: var(--head);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--text2);
+        margin-bottom: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .card-title .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      /* Stat cards */
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .stat-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 20px;
+        position: relative;
+        overflow: hidden;
+        cursor: default;
+        transition: border-color 0.2s;
+      }
+      .stat-card:hover {
+        border-color: var(--border2);
+      }
+      .stat-card .accent-bar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 3px;
+      }
+      .stat-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .stat-value {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 30px;
+        line-height: 1;
+        color: var(--text);
+        margin-bottom: 4px;
+      }
+      .stat-sub {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+      }
+      .stat-delta {
+        font-family: var(--mono);
+        font-size: 11px;
+        margin-top: 6px;
+      }
+      .delta-up {
+        color: var(--green);
+      }
+      .delta-down {
+        color: var(--red);
+      }
+
+      /* Table */
+      .data-table {
         width: 100%;
         border-collapse: collapse;
       }
-      th,
-      td {
-        padding: 10px;
-        border-bottom: 1px solid #ddd;
+      .data-table th {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 8px 12px;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
       }
-      button {
-        padding: 6px 12px;
+      .data-table td {
+        padding: 10px 12px;
+        font-family: var(--body);
+        font-size: 13px;
+        color: var(--text);
+        border-bottom: 1px solid rgba(42, 48, 64, 0.5);
+      }
+      .data-table tr:last-child td {
+        border-bottom: none;
+      }
+      .data-table tbody tr {
+        cursor: pointer;
+        transition: background 0.1s;
+      }
+      .data-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .data-table .mono {
+        font-family: var(--mono);
+        font-size: 12px;
+      }
+
+      /* Badges */
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 2px;
+        font-family: var(--mono);
+        font-size: 10px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        font-weight: bold;
+      }
+      .badge-green {
+        background: var(--green-dim);
+        color: var(--green);
+        border: 1px solid rgba(34, 201, 122, 0.3);
+      }
+      .badge-red {
+        background: var(--red-dim);
+        color: var(--red);
+        border: 1px solid rgba(240, 64, 96, 0.3);
+      }
+      .badge-yellow {
+        background: var(--yellow-dim);
+        color: var(--yellow);
+        border: 1px solid rgba(245, 197, 24, 0.3);
+      }
+      .badge-blue {
+        background: var(--blue-dim);
+        color: var(--blue);
+        border: 1px solid rgba(58, 142, 246, 0.3);
+      }
+      .badge-orange {
+        background: var(--accent-dim);
+        color: var(--accent);
+        border: 1px solid rgba(245, 130, 10, 0.3);
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        border-radius: 3px;
+        border: none;
+        cursor: pointer;
+        font-family: var(--head);
+        font-weight: 600;
+        font-size: 13px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        transition: all 0.15s;
+      }
+      .btn-primary {
+        background: var(--accent);
+        color: #000;
+      }
+      .btn-primary:hover {
+        background: var(--accent2);
+        box-shadow: 0 0 16px var(--accent-glow);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--text2);
+        border: 1px solid var(--border);
+      }
+      .btn-ghost:hover {
+        border-color: var(--border2);
+        color: var(--text);
+      }
+      .btn-danger {
+        background: var(--red-dim);
+        color: var(--red);
+        border: 1px solid rgba(240, 64, 96, 0.3);
+      }
+      .btn-danger:hover {
+        background: rgba(240, 64, 96, 0.2);
+      }
+      .btn-success {
+        background: var(--green-dim);
+        color: var(--green);
+        border: 1px solid rgba(34, 201, 122, 0.3);
+      }
+      .btn-success:hover {
+        background: rgba(34, 201, 122, 0.2);
+      }
+      .btn-sm {
+        padding: 5px 10px;
+        font-size: 11px;
+      }
+
+      /* Grid helpers */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 16px;
+      }
+      .mb-4 {
+        margin-bottom: 16px;
+      }
+      .mb-6 {
+        margin-bottom: 24px;
+      }
+      .flex {
+        display: flex;
+      }
+      .flex-between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .gap-2 {
+        gap: 8px;
+      }
+      .gap-3 {
+        gap: 12px;
+      }
+
+      /* Input */
+      .input-group {
+        margin-bottom: 14px;
+      }
+      .input-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .input {
+        width: 100%;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 8px 12px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 13px;
+        outline: none;
+        transition: border-color 0.15s;
+      }
+      .input:focus {
+        border-color: var(--accent);
+      }
+      select.input {
         cursor: pointer;
       }
-      input {
-        padding: 5px;
-        margin: 5px 0;
+      .input-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      /* Donut chart */
+      .donut-wrap {
+        position: relative;
+        width: 120px;
+        height: 120px;
+      }
+      .donut-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      .donut-label .big {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 22px;
+        color: var(--text);
+        line-height: 1;
+      }
+      .donut-label .small {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      /* Bar chart */
+      .bar-chart {
+        display: flex;
+        align-items: flex-end;
+        gap: 6px;
+        height: 80px;
+      }
+      .bar-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+      }
+      .bar {
         width: 100%;
+        border-radius: 2px 2px 0 0;
+        min-height: 4px;
+        transition: height 0.3s;
+      }
+      .bar-label {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+      }
+      .bar-val {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text2);
+      }
+
+      /* Machine detail */
+      .machine-detail {
+        animation: fadeIn 0.2s ease;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--text3);
+        cursor: pointer;
+        letter-spacing: 1px;
+        margin-bottom: 20px;
+        transition: color 0.15s;
+      }
+      .back-btn:hover {
+        color: var(--accent);
+      }
+
+      .machine-header {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 24px;
+      }
+      .machine-id {
+        font-family: var(--mono);
+        font-size: 11px;
+        color: var(--accent);
+        letter-spacing: 2px;
+        margin-bottom: 4px;
+      }
+      .machine-name {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 28px;
+        color: var(--text);
+        letter-spacing: 1px;
+      }
+      .machine-type {
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text3);
+        margin-top: 4px;
+      }
+
+      .spec-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+      }
+      .spec-item {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 12px 14px;
+      }
+      .spec-key {
+        font-family: var(--mono);
+        font-size: 9px;
+        color: var(--text3);
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        margin-bottom: 5px;
+      }
+      .spec-val {
+        font-family: var(--mono);
+        font-size: 14px;
+        color: var(--text);
+      }
+
+      /* Live gauge */
+      .gauge-row {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+      .gauge-item {
+        flex: 1;
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 14px 16px;
+      }
+      .gauge-label {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 8px;
+      }
+      .gauge-bar-track {
+        height: 6px;
+        background: var(--border);
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 6px;
+      }
+      .gauge-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.5s;
+      }
+      .gauge-value {
+        font-family: var(--mono);
+        font-size: 18px;
+        color: var(--text);
+      }
+      .gauge-unit {
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      /* Actions */
+      .action-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+      }
+      .action-card {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 14px;
+        cursor: pointer;
+        transition: all 0.15s;
+        text-align: center;
+      }
+      .action-card:hover {
+        border-color: var(--accent);
+        background: var(--accent-dim);
+      }
+      .action-card .action-icon {
+        font-size: 22px;
+        margin-bottom: 6px;
+      }
+      .action-card .action-label {
+        font-family: var(--head);
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 1px;
+        color: var(--text2);
+        text-transform: uppercase;
+      }
+
+      /* Log */
+      .log-entry {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 8px 0;
+        border-bottom: 1px solid rgba(42, 48, 64, 0.5);
+        font-size: 12px;
+      }
+      .log-time {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        white-space: nowrap;
+        padding-top: 2px;
+      }
+      .log-msg {
+        color: var(--text2);
+        font-family: var(--body);
+      }
+      .log-tag {
+        font-family: var(--mono);
+        font-size: 9px;
+        padding: 1px 6px;
+        border-radius: 2px;
+        margin-right: 6px;
+      }
+
+      /* Modal / overlay */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+        backdrop-filter: blur(4px);
+      }
+      .modal {
+        background: var(--panel2);
+        border: 1px solid var(--border2);
+        border-radius: 6px;
+        padding: 28px;
+        width: 560px;
+        max-width: 95vw;
+        max-height: 85vh;
+        overflow-y: auto;
+        animation: fadeIn 0.2s ease;
+        position: relative;
+      }
+      .modal-title {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 20px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: none;
+        border: none;
+        color: var(--text3);
+        font-size: 18px;
+        cursor: pointer;
+      }
+      .modal-close:hover {
+        color: var(--text);
+      }
+
+      /* Result box */
+      .result-box {
+        background: var(--bg);
+        border: 1px solid var(--accent);
+        border-radius: 4px;
+        padding: 18px;
+        margin-top: 18px;
+        animation: fadeIn 0.3s ease;
+      }
+      .result-title {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--accent);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 12px;
+      }
+      .result-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        border-bottom: 1px solid rgba(42, 48, 64, 0.5);
+        font-size: 13px;
+      }
+      .result-row:last-child {
+        border-bottom: none;
+      }
+      .result-key {
+        color: var(--text3);
+        font-family: var(--mono);
+        font-size: 11px;
+      }
+      .result-val {
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      .result-main {
+        font-family: var(--head);
+        font-weight: 700;
+        font-size: 32px;
+        color: var(--accent);
+        margin: 8px 0 12px;
+      }
+
+      /* Inventory */
+      .inv-progress {
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin-top: 6px;
+      }
+      .inv-progress-fill {
+        height: 100%;
+        border-radius: 2px;
+      }
+
+      /* Timeline */
+      .timeline {
+        position: relative;
+        padding-left: 20px;
+      }
+      .timeline::before {
+        content: "";
+        position: absolute;
+        left: 7px;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: var(--border);
+      }
+      .timeline-item {
+        position: relative;
+        padding-bottom: 18px;
+      }
+      .timeline-dot {
+        position: absolute;
+        left: -16px;
+        top: 3px;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        border: 1px solid currentColor;
+      }
+      .timeline-time {
+        font-family: var(--mono);
+        font-size: 10px;
+        color: var(--text3);
+        margin-bottom: 3px;
+      }
+      .timeline-text {
+        font-size: 13px;
+        color: var(--text2);
+      }
+
+      /* Notification toast */
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--panel2);
+        border: 1px solid var(--accent);
+        border-radius: 4px;
+        padding: 14px 20px;
+        font-family: var(--mono);
+        font-size: 12px;
+        color: var(--text);
+        z-index: 200;
+        animation: slideUp 0.3s ease;
+        max-width: 320px;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+      .toast-title {
+        color: var(--accent);
+        font-size: 11px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+
+      /* Search */
+      .search-box {
+        background: var(--bg2);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 7px 12px;
+        color: var(--text);
+        font-family: var(--mono);
+        font-size: 12px;
+        outline: none;
+        width: 240px;
+        transition: border-color 0.15s;
+      }
+      .search-box:focus {
+        border-color: var(--accent);
+      }
+
+      /* Pill tabs */
+      .pill-tabs {
+        display: flex;
+        gap: 4px;
+        background: var(--bg2);
+        border-radius: 4px;
+        padding: 3px;
+        border: 1px solid var(--border);
+      }
+      .pill-tab {
+        padding: 5px 14px;
+        border-radius: 3px;
+        cursor: pointer;
+        font-family: var(--head);
+        font-weight: 500;
+        font-size: 12px;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: var(--text3);
+        transition: all 0.15s;
+      }
+      .pill-tab.active {
+        background: var(--accent);
+        color: #000;
+      }
+      .pill-tab:not(.active):hover {
+        color: var(--text);
+      }
+
+      /* Scrollable table wrapper */
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      /* Calc list */
+      .calc-card {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        padding: 18px 20px;
+        cursor: pointer;
+        transition: all 0.15s;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 10px;
+      }
+      .calc-card:hover {
+        border-color: var(--accent);
+        transform: translateX(4px);
+      }
+      .calc-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        flex-shrink: 0;
+      }
+      .calc-info {
+        flex: 1;
+      }
+      .calc-name {
+        font-family: var(--head);
+        font-weight: 600;
+        font-size: 16px;
+        letter-spacing: 1px;
+        color: var(--text);
+        margin-bottom: 3px;
+      }
+      .calc-desc {
+        font-size: 12px;
+        color: var(--text3);
+      }
+      .calc-tag {
+        font-family: var(--mono);
+        font-size: 9px;
+      }
+
+      /* Mini sparkline */
+      .sparkline {
+        display: flex;
+        align-items: flex-end;
+        gap: 2px;
+        height: 28px;
+      }
+      .spark-bar {
+        width: 4px;
+        border-radius: 1px;
+        background: var(--accent);
+        opacity: 0.6;
+      }
+      .spark-bar.high {
+        opacity: 1;
       }
     </style>
-
-    <!-- React CDN -->
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-
-    <!-- jsPDF for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   </head>
   <body>
     <div id="root"></div>
-
     <script type="text/babel">
-      const { useState } = React;
+      const { useState, useEffect, useRef } = React;
 
-      function Navbar({ setPage }) {
+      // ─── DATA ─────────────────────────────────────────────────────────────────────
+
+      const MACHINES = [
+        {
+          id: "INJ-001",
+          name: "Krauss-Maffei KM500",
+          type: "Injection Moulding",
+          status: "Running",
+          operator: "E. Lindqvist",
+          shift: "Day",
+          output: 1240,
+          target: 1500,
+          uptime: 94.2,
+          lastMaint: "2026-04-01",
+          nextMaint: "2026-05-01",
+          cycles: 48200,
+          temp: 218,
+          pressure: 142,
+          speed: 87,
+          material: "ABS",
+          mold: "Housing-7B",
+          cycleTime: 28,
+          clampForce: 500,
+          shotWeight: 320,
+          barrelTemp: [210, 215, 218, 220, 215],
+          moldTemp: 45,
+          coolingTime: 12,
+          plasticizingTime: 8,
+          location: "Hall A - Bay 3",
+          year: 2019,
+          serial: "KM-5002-19-SE",
+          energyKWh: 82,
+          rejects: 14,
+        },
+        {
+          id: "INJ-002",
+          name: "Arburg 720S",
+          type: "Injection Moulding",
+          status: "Running",
+          operator: "M. Bergström",
+          shift: "Day",
+          output: 890,
+          target: 1000,
+          uptime: 89.1,
+          lastMaint: "2026-03-20",
+          nextMaint: "2026-04-20",
+          cycles: 31500,
+          temp: 235,
+          pressure: 138,
+          speed: 72,
+          material: "PP",
+          mold: "Cap-3A",
+          cycleTime: 22,
+          clampForce: 720,
+          shotWeight: 180,
+          barrelTemp: [225, 230, 235, 232, 228],
+          moldTemp: 40,
+          coolingTime: 9,
+          plasticizingTime: 6,
+          location: "Hall A - Bay 5",
+          year: 2021,
+          serial: "ARB-720S-21-SE",
+          energyKWh: 64,
+          rejects: 8,
+        },
+        {
+          id: "EXT-001",
+          name: "Cincinnati Milacron 45",
+          type: "Extrusion",
+          status: "Idle",
+          operator: "—",
+          shift: "—",
+          output: 0,
+          target: 800,
+          uptime: 0,
+          lastMaint: "2026-03-15",
+          nextMaint: "2026-04-15",
+          cycles: 0,
+          temp: 195,
+          pressure: 88,
+          speed: 0,
+          material: "HDPE",
+          mold: "—",
+          cycleTime: 0,
+          clampForce: 0,
+          shotWeight: 0,
+          barrelTemp: [190, 192, 195, 198, 196],
+          moldTemp: 0,
+          coolingTime: 0,
+          plasticizingTime: 0,
+          location: "Hall B - Bay 1",
+          year: 2018,
+          serial: "CM-45-18-SE",
+          energyKWh: 0,
+          rejects: 0,
+        },
+        {
+          id: "BLW-001",
+          name: "Bekum BAE-3",
+          type: "Blow Moulding",
+          status: "Running",
+          operator: "P. Svensson",
+          shift: "Day",
+          output: 3400,
+          target: 4000,
+          uptime: 78.5,
+          lastMaint: "2026-03-28",
+          nextMaint: "2026-04-28",
+          cycles: 112000,
+          temp: 178,
+          pressure: 64,
+          speed: 95,
+          material: "PET",
+          mold: "Bottle-1L",
+          cycleTime: 8,
+          clampForce: 120,
+          shotWeight: 45,
+          barrelTemp: [170, 175, 178, 176, 172],
+          moldTemp: 12,
+          coolingTime: 4,
+          plasticizingTime: 3,
+          location: "Hall B - Bay 3",
+          year: 2020,
+          serial: "BKM-BAE3-20-SE",
+          energyKWh: 38,
+          rejects: 62,
+        },
+        {
+          id: "INJ-003",
+          name: "Engel Victory 200",
+          type: "Injection Moulding",
+          status: "Maintenance",
+          operator: "Tech Team",
+          shift: "—",
+          output: 0,
+          target: 1200,
+          uptime: 0,
+          lastMaint: "2026-04-16",
+          nextMaint: "2026-05-16",
+          cycles: 67800,
+          temp: 0,
+          pressure: 0,
+          speed: 0,
+          material: "PA6",
+          mold: "Bracket-9C",
+          cycleTime: 35,
+          clampForce: 200,
+          shotWeight: 290,
+          barrelTemp: [0, 0, 0, 0, 0],
+          moldTemp: 0,
+          coolingTime: 14,
+          plasticizingTime: 10,
+          location: "Hall A - Bay 8",
+          year: 2017,
+          serial: "ENG-V200-17-SE",
+          energyKWh: 0,
+          rejects: 0,
+        },
+        {
+          id: "THF-001",
+          name: "Illig RV74",
+          type: "Thermoforming",
+          status: "Running",
+          operator: "A. Karlsson",
+          shift: "Day",
+          output: 6200,
+          target: 7000,
+          uptime: 91.3,
+          lastMaint: "2026-04-05",
+          nextMaint: "2026-05-05",
+          cycles: 224500,
+          temp: 165,
+          pressure: 6,
+          speed: 88,
+          material: "PVC",
+          mold: "Tray-A4",
+          cycleTime: 4,
+          clampForce: 0,
+          shotWeight: 0,
+          barrelTemp: [160, 163, 165, 164, 162],
+          moldTemp: 20,
+          coolingTime: 2,
+          plasticizingTime: 0,
+          location: "Hall C - Bay 2",
+          year: 2022,
+          serial: "ILL-RV74-22-SE",
+          energyKWh: 44,
+          rejects: 38,
+        },
+      ];
+
+      const ORDERS = [
+        {
+          id: "ORD-2024-0441",
+          customer: "Volvo AB",
+          product: "Dashboard Bracket Set",
+          material: "ABS",
+          qty: 5000,
+          completed: 5000,
+          status: "Delivered",
+          date: "2026-04-10",
+          value: 42500,
+          machine: "INJ-001",
+          priority: "Normal",
+        },
+        {
+          id: "ORD-2024-0442",
+          customer: "IKEA of Sweden",
+          product: "Storage Box Lid 40L",
+          material: "PP",
+          qty: 20000,
+          completed: 18450,
+          status: "In Progress",
+          date: "2026-04-18",
+          value: 38000,
+          machine: "INJ-002",
+          priority: "High",
+        },
+        {
+          id: "ORD-2024-0443",
+          customer: "Systembolaget",
+          product: "PET Bottle 1L",
+          material: "PET",
+          qty: 50000,
+          completed: 34200,
+          status: "In Progress",
+          date: "2026-04-22",
+          value: 61000,
+          machine: "BLW-001",
+          priority: "High",
+        },
+        {
+          id: "ORD-2024-0444",
+          customer: "Autoliv Nordic",
+          product: "PA6 Structural Clip",
+          material: "PA6",
+          qty: 8000,
+          completed: 0,
+          status: "On Hold",
+          date: "2026-04-30",
+          value: 29600,
+          machine: "INJ-003",
+          priority: "Normal",
+        },
+        {
+          id: "ORD-2024-0445",
+          customer: "Hexpol AB",
+          product: "HDPE Profile 6m",
+          material: "HDPE",
+          qty: 2000,
+          completed: 0,
+          status: "Queued",
+          date: "2026-05-05",
+          value: 18200,
+          machine: "EXT-001",
+          priority: "Low",
+        },
+        {
+          id: "ORD-2024-0446",
+          customer: "Coop Sverige",
+          product: "PVC Food Tray A4",
+          material: "PVC",
+          qty: 80000,
+          completed: 71200,
+          status: "In Progress",
+          date: "2026-04-17",
+          value: 52000,
+          machine: "THF-001",
+          priority: "Urgent",
+        },
+        {
+          id: "ORD-2024-0447",
+          customer: "Volvo AB",
+          product: "Glove Box Trim",
+          material: "ABS",
+          qty: 3000,
+          completed: 3000,
+          status: "Delivered",
+          date: "2026-04-08",
+          value: 31500,
+          machine: "INJ-001",
+          priority: "Normal",
+        },
+        {
+          id: "ORD-2024-0448",
+          customer: "Elgiganten",
+          product: "TV Mount Bracket",
+          material: "ABS",
+          qty: 12000,
+          completed: 0,
+          status: "Queued",
+          date: "2026-05-10",
+          value: 44000,
+          machine: "INJ-001",
+          priority: "Normal",
+        },
+      ];
+
+      const INVENTORY = [
+        {
+          id: "MAT-001",
+          material: "ABS Granulate",
+          grade: "GP-22",
+          supplier: "BASF SE",
+          stock: 8400,
+          unit: "kg",
+          min: 2000,
+          max: 12000,
+          location: "Silo A1",
+          reorder: 3000,
+          price: 2.85,
+          lastDelivery: "2026-04-10",
+          color: "--blue",
+        },
+        {
+          id: "MAT-002",
+          material: "Polypropylene (PP)",
+          grade: "H110MA",
+          supplier: "Borealis AG",
+          stock: 5200,
+          unit: "kg",
+          min: 1500,
+          max: 8000,
+          location: "Silo A2",
+          reorder: 2000,
+          price: 1.95,
+          lastDelivery: "2026-04-08",
+          color: "--green",
+        },
+        {
+          id: "MAT-003",
+          material: "PET Preform",
+          grade: "IV-0.80",
+          supplier: "Indorama",
+          stock: 22000,
+          unit: "pcs",
+          min: 5000,
+          max: 30000,
+          location: "Warehouse B",
+          reorder: 8000,
+          price: 0.38,
+          lastDelivery: "2026-04-12",
+          color: "--accent",
+        },
+        {
+          id: "MAT-004",
+          material: "HDPE Pellets",
+          grade: "HE3490",
+          supplier: "LyondellBasell",
+          stock: 1200,
+          unit: "kg",
+          min: 1500,
+          max: 6000,
+          location: "Silo B1",
+          reorder: 2500,
+          price: 1.72,
+          lastDelivery: "2026-03-28",
+          color: "--red",
+        },
+        {
+          id: "MAT-005",
+          material: "Polyamide PA6",
+          grade: "B3S",
+          supplier: "Lanxess",
+          stock: 3100,
+          unit: "kg",
+          min: 800,
+          max: 5000,
+          location: "Silo A3",
+          reorder: 1500,
+          price: 3.4,
+          lastDelivery: "2026-04-05",
+          color: "--yellow",
+        },
+        {
+          id: "MAT-006",
+          material: "PVC Rigid Compound",
+          grade: "K67",
+          supplier: "Vinnolit",
+          stock: 9800,
+          unit: "kg",
+          min: 2000,
+          max: 12000,
+          location: "Silo C1",
+          reorder: 3000,
+          price: 1.58,
+          lastDelivery: "2026-04-14",
+          color: "--blue",
+        },
+        {
+          id: "MAT-007",
+          material: "Colorant MB Black",
+          grade: "CB-4020",
+          supplier: "Cabot Corp",
+          stock: 340,
+          unit: "kg",
+          min: 100,
+          max: 600,
+          location: "Cabinet 3",
+          reorder: 200,
+          price: 6.8,
+          lastDelivery: "2026-04-09",
+          color: "--text3",
+        },
+        {
+          id: "MAT-008",
+          material: "Release Agent",
+          grade: "RA-550",
+          supplier: "Chem-Trend",
+          stock: 48,
+          unit: "L",
+          min: 20,
+          max: 100,
+          location: "Cabinet 1",
+          reorder: 40,
+          price: 22.5,
+          lastDelivery: "2026-04-01",
+          color: "--green",
+        },
+      ];
+
+      const CALCULATIONS = [
+        {
+          id: "calc-shot",
+          name: "Shot Weight Calculator",
+          desc: "Calculate required shot weight from part geometry and material density",
+          icon: "⚖️",
+          color: "--blue",
+          tag: "Injection",
+          fields: [
+            {
+              key: "volume",
+              label: "Part Volume",
+              unit: "cm³",
+              default: "45",
+              type: "number",
+            },
+            {
+              key: "density",
+              label: "Material Density",
+              unit: "g/cm³",
+              default: "1.05",
+              type: "number",
+            },
+            {
+              key: "runners",
+              label: "Runner Volume",
+              unit: "cm³",
+              default: "8",
+              type: "number",
+            },
+            {
+              key: "cavities",
+              label: "Number of Cavities",
+              unit: "",
+              default: "4",
+              type: "number",
+            },
+            {
+              key: "safety",
+              label: "Safety Factor",
+              unit: "%",
+              default: "5",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const partWt = v.volume * v.density;
+            const totalWt =
+              (partWt * v.cavities + v.runners * v.density) *
+              (1 + v.safety / 100);
+            return {
+              main: totalWt.toFixed(1) + " g",
+              label: "Total Shot Weight",
+              rows: [
+                { k: "Part weight (per cavity)", v: partWt.toFixed(2) + " g" },
+                {
+                  k: "Runner weight",
+                  v: (v.runners * v.density).toFixed(2) + " g",
+                },
+                {
+                  k: "Net part weight × cavities",
+                  v: (partWt * v.cavities).toFixed(2) + " g",
+                },
+                { k: "Safety factor applied", v: v.safety + "%" },
+                { k: "Total shot weight", v: totalWt.toFixed(1) + " g" },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-cycle",
+          name: "Cycle Time Estimator",
+          desc: "Estimate injection moulding cycle time from wall thickness and material",
+          icon: "⏱️",
+          color: "--accent",
+          tag: "Injection",
+          fields: [
+            {
+              key: "wallThick",
+              label: "Max Wall Thickness",
+              unit: "mm",
+              default: "3.2",
+              type: "number",
+            },
+            {
+              key: "moldTemp",
+              label: "Mould Temperature",
+              unit: "°C",
+              default: "45",
+              type: "number",
+            },
+            {
+              key: "meltTemp",
+              label: "Melt Temperature",
+              unit: "°C",
+              default: "220",
+              type: "number",
+            },
+            {
+              key: "ejectTemp",
+              label: "Ejection Temperature",
+              unit: "°C",
+              default: "90",
+              type: "number",
+            },
+            {
+              key: "thermalDiff",
+              label: "Thermal Diffusivity",
+              unit: "mm²/s",
+              default: "0.077",
+              type: "number",
+            },
+            {
+              key: "fillTime",
+              label: "Fill + Pack Time",
+              unit: "s",
+              default: "4",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const s = v.wallThick / 2;
+            const factor = Math.log(
+              (8 / Math.PI ** 2) *
+                ((v.meltTemp - v.moldTemp) / (v.ejectTemp - v.moldTemp)),
+            );
+            const coolingTime =
+              (s ** 2 / (Math.PI ** 2 * v.thermalDiff)) * Math.abs(factor);
+            const openClose = 3.5;
+            const total = coolingTime + v.fillTime + openClose;
+            const cyclesPerHour = Math.floor(3600 / total);
+            return {
+              main: total.toFixed(1) + " s",
+              label: "Estimated Cycle Time",
+              rows: [
+                { k: "Cooling time", v: coolingTime.toFixed(1) + " s" },
+                { k: "Fill + Pack time", v: v.fillTime + " s" },
+                { k: "Open / Close / Eject", v: openClose + " s" },
+                { k: "Total cycle time", v: total.toFixed(1) + " s" },
+                { k: "Theoretical cycles/hour", v: cyclesPerHour + " cycles" },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-clamp",
+          name: "Clamping Force Calculator",
+          desc: "Calculate required clamping force to prevent mould flash",
+          icon: "🔩",
+          color: "--green",
+          tag: "Tooling",
+          fields: [
+            {
+              key: "projArea",
+              label: "Projected Part Area",
+              unit: "cm²",
+              default: "120",
+              type: "number",
+            },
+            {
+              key: "cavities",
+              label: "Number of Cavities",
+              unit: "",
+              default: "4",
+              type: "number",
+            },
+            {
+              key: "runnerArea",
+              label: "Runner Projected Area",
+              unit: "cm²",
+              default: "18",
+              type: "number",
+            },
+            {
+              key: "cavPressure",
+              label: "Cavity Pressure (avg)",
+              unit: "MPa",
+              default: "35",
+              type: "number",
+            },
+            {
+              key: "safety",
+              label: "Safety Factor",
+              unit: "",
+              default: "1.1",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const totalArea = v.projArea * v.cavities + v.runnerArea;
+            const forceKN = (totalArea * v.cavPressure * 100 * v.safety) / 1000;
+            const forceTons = forceKN / 9.81;
+            return {
+              main: forceTons.toFixed(0) + " t",
+              label: "Required Clamping Force",
+              rows: [
+                { k: "Total projected area", v: totalArea.toFixed(1) + " cm²" },
+                { k: "Cavity pressure", v: v.cavPressure + " MPa" },
+                { k: "Clamping force (kN)", v: forceKN.toFixed(1) + " kN" },
+                {
+                  k: "Clamping force (metric tons)",
+                  v: forceTons.toFixed(0) + " t",
+                },
+                { k: "Safety factor applied", v: "x" + v.safety },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-material",
+          name: "Material Consumption",
+          desc: "Calculate raw material needed for a production run including scrap",
+          icon: "🧱",
+          color: "--yellow",
+          tag: "Planning",
+          fields: [
+            {
+              key: "partWeight",
+              label: "Part Weight",
+              unit: "g",
+              default: "85",
+              type: "number",
+            },
+            {
+              key: "qty",
+              label: "Order Quantity",
+              unit: "pcs",
+              default: "10000",
+              type: "number",
+            },
+            {
+              key: "scrapRate",
+              label: "Scrap Rate",
+              unit: "%",
+              default: "2.5",
+              type: "number",
+            },
+            {
+              key: "runnerWeight",
+              label: "Runner Weight",
+              unit: "g",
+              default: "22",
+              type: "number",
+            },
+            {
+              key: "regrindRatio",
+              label: "Regrind Ratio",
+              unit: "%",
+              default: "15",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const goodParts = v.qty / (1 - v.scrapRate / 100);
+            const totalMaterial =
+              (goodParts * (v.partWeight + v.runnerWeight)) / 1000;
+            const regrindSavings = totalMaterial * (v.regrindRatio / 100);
+            const virgin = totalMaterial - regrindSavings;
+            return {
+              main: virgin.toFixed(1) + " kg",
+              label: "Virgin Material Required",
+              rows: [
+                {
+                  k: "Parts to produce (incl. scrap)",
+                  v: Math.ceil(goodParts).toLocaleString() + " pcs",
+                },
+                {
+                  k: "Total material (gross)",
+                  v: totalMaterial.toFixed(1) + " kg",
+                },
+                { k: "Regrind savings", v: regrindSavings.toFixed(1) + " kg" },
+                { k: "Virgin material required", v: virgin.toFixed(1) + " kg" },
+                {
+                  k: "Cost estimate (ABS @ 2.85 SEK/kg)",
+                  v: "SEK " + (virgin * 2.85).toFixed(0),
+                },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-oee",
+          name: "OEE Calculator",
+          desc: "Overall Equipment Effectiveness from availability, performance, quality",
+          icon: "📊",
+          color: "--red",
+          tag: "KPI",
+          fields: [
+            {
+              key: "planTime",
+              label: "Planned Production Time",
+              unit: "h",
+              default: "8",
+              type: "number",
+            },
+            {
+              key: "downTime",
+              label: "Unplanned Downtime",
+              unit: "h",
+              default: "0.6",
+              type: "number",
+            },
+            {
+              key: "idealCycle",
+              label: "Ideal Cycle Time",
+              unit: "s",
+              default: "25",
+              type: "number",
+            },
+            {
+              key: "totalParts",
+              label: "Total Parts Produced",
+              unit: "pcs",
+              default: "980",
+              type: "number",
+            },
+            {
+              key: "goodParts",
+              label: "Good Parts",
+              unit: "pcs",
+              default: "955",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const runTime = v.planTime - v.downTime;
+            const avail = runTime / v.planTime;
+            const idealParts = (runTime * 3600) / v.idealCycle;
+            const perf = v.totalParts / idealParts;
+            const qual = v.goodParts / v.totalParts;
+            const oee = avail * perf * qual * 100;
+            return {
+              main: oee.toFixed(1) + "%",
+              label: "Overall Equipment Effectiveness",
+              rows: [
+                { k: "Availability", v: (avail * 100).toFixed(1) + "%" },
+                { k: "Performance", v: (perf * 100).toFixed(1) + "%" },
+                { k: "Quality", v: (qual * 100).toFixed(1) + "%" },
+                { k: "OEE", v: oee.toFixed(1) + "%" },
+                { k: "World-class benchmark", v: "≥ 85%" },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-cooling",
+          name: "Cooling Line Flow Rate",
+          desc: "Determine required coolant flow for adequate mould temperature control",
+          icon: "❄️",
+          color: "--blue",
+          tag: "Process",
+          fields: [
+            {
+              key: "shotWeight",
+              label: "Shot Weight",
+              unit: "g",
+              default: "340",
+              type: "number",
+            },
+            {
+              key: "cycleTime",
+              label: "Cycle Time",
+              unit: "s",
+              default: "28",
+              type: "number",
+            },
+            {
+              key: "meltTemp",
+              label: "Melt Temperature",
+              unit: "°C",
+              default: "220",
+              type: "number",
+            },
+            {
+              key: "ejectTemp",
+              label: "Ejection Temperature",
+              unit: "°C",
+              default: "90",
+              type: "number",
+            },
+            {
+              key: "coolantIn",
+              label: "Coolant Inlet Temp",
+              unit: "°C",
+              default: "12",
+              type: "number",
+            },
+            {
+              key: "coolantOut",
+              label: "Coolant Outlet Temp",
+              unit: "°C",
+              default: "18",
+              type: "number",
+            },
+            {
+              key: "heatCapacity",
+              label: "Material Heat Capacity",
+              unit: "J/g·K",
+              default: "1.4",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const heatRemoved =
+              v.shotWeight * v.heatCapacity * (v.meltTemp - v.ejectTemp);
+            const heatPerSec = heatRemoved / v.cycleTime;
+            const deltaT = v.coolantOut - v.coolantIn;
+            const flowGrams = heatPerSec / (4.18 * deltaT);
+            const flowLPM = (flowGrams * 60) / 1000;
+            return {
+              main: flowLPM.toFixed(2) + " L/min",
+              label: "Required Coolant Flow Rate",
+              rows: [
+                {
+                  k: "Total heat to remove",
+                  v: (heatRemoved / 1000).toFixed(2) + " kJ/shot",
+                },
+                { k: "Heat removal rate", v: heatPerSec.toFixed(1) + " W" },
+                { k: "Coolant ΔT", v: deltaT + " °C" },
+                { k: "Flow rate", v: flowLPM.toFixed(2) + " L/min" },
+                {
+                  k: "Turbulent flow (Re > 4000) needed",
+                  v: "> 4 L/min recommended",
+                },
+              ],
+            };
+          },
+        },
+        {
+          id: "calc-extruder",
+          name: "Extruder Output Estimator",
+          desc: "Estimate throughput for single-screw extruder based on screw geometry",
+          icon: "🌀",
+          color: "--green",
+          tag: "Extrusion",
+          fields: [
+            {
+              key: "screwDia",
+              label: "Screw Diameter",
+              unit: "mm",
+              default: "45",
+              type: "number",
+            },
+            {
+              key: "pitch",
+              label: "Screw Pitch",
+              unit: "mm",
+              default: "45",
+              type: "number",
+            },
+            {
+              key: "channelDepth",
+              label: "Channel Depth (metering)",
+              unit: "mm",
+              default: "3.5",
+              type: "number",
+            },
+            {
+              key: "rpm",
+              label: "Screw Speed",
+              unit: "RPM",
+              default: "80",
+              type: "number",
+            },
+            {
+              key: "density",
+              label: "Melt Density",
+              unit: "g/cm³",
+              default: "0.95",
+              type: "number",
+            },
+            {
+              key: "efficiency",
+              label: "Volumetric Efficiency",
+              unit: "%",
+              default: "85",
+              type: "number",
+            },
+          ],
+          compute: (v) => {
+            const D = v.screwDia / 10; // cm
+            const h = v.channelDepth / 10; // cm
+            const p = v.pitch / 10; // cm
+            const W = Math.PI * D - h; // approximate channel width
+            const Qd =
+              0.5 *
+              Math.PI ** 2 *
+              D *
+              h *
+              W *
+              Math.sin(Math.atan(p / (Math.PI * D))) *
+              Math.cos(Math.atan(p / (Math.PI * D))) *
+              (v.rpm / 60);
+            const Qnet = Qd * (v.efficiency / 100);
+            const throughputKgH = (Qnet * v.density * 3600) / 1000;
+            return {
+              main: throughputKgH.toFixed(1) + " kg/h",
+              label: "Estimated Throughput",
+              rows: [
+                { k: "Drag flow (Qd)", v: (Qd * 1000).toFixed(2) + " cm³/s" },
+                {
+                  k: "Net flow (with efficiency)",
+                  v: (Qnet * 1000).toFixed(2) + " cm³/s",
+                },
+                { k: "Throughput", v: throughputKgH.toFixed(1) + " kg/h" },
+                {
+                  k: "Daily throughput (24h)",
+                  v: (throughputKgH * 24).toFixed(0) + " kg/day",
+                },
+                { k: "Screw L/D assumption", v: "24:1 (standard)" },
+              ],
+            };
+          },
+        },
+      ];
+
+      const LOG_ENTRIES = [
+        {
+          time: "08:42",
+          tag: "alarm",
+          color: "var(--red)",
+          msg: "INJ-003 — Barrel temperature sensor #3 fault. Maintenance dispatched.",
+        },
+        {
+          time: "08:31",
+          tag: "info",
+          color: "var(--blue)",
+          msg: "BLW-001 — Shift output on track. 3,400 / 4,000 units.",
+        },
+        {
+          time: "08:15",
+          tag: "ok",
+          color: "var(--green)",
+          msg: "ORD-2024-0441 marked as Delivered. Shipping confirmed.",
+        },
+        {
+          time: "07:58",
+          tag: "warn",
+          color: "var(--yellow)",
+          msg: "MAT-004 (HDPE) stock below reorder point. PO recommended.",
+        },
+        {
+          time: "07:45",
+          tag: "info",
+          color: "var(--blue)",
+          msg: "INJ-001 — Mould change to Housing-7B completed. Production resumed.",
+        },
+        {
+          time: "07:30",
+          tag: "ok",
+          color: "var(--green)",
+          msg: "Day shift handover complete. All operators signed in.",
+        },
+        {
+          time: "06:02",
+          tag: "warn",
+          color: "var(--yellow)",
+          msg: "THF-001 — Heating element #4 response slow. Monitor advised.",
+        },
+      ];
+
+      // ─── HELPERS ──────────────────────────────────────────────────────────────────
+
+      function Clock() {
+        const [t, setT] = useState(new Date());
+        useEffect(() => {
+          const i = setInterval(() => setT(new Date()), 1000);
+          return () => clearInterval(i);
+        }, []);
         return (
-          <header>
-            <h2>Plastic Factory</h2>
-            <nav>
-              <button onClick={() => setPage("home")}>Home</button>
-              <button onClick={() => setPage("dashboard")}>Dashboard</button>
-              <button onClick={() => setPage("machines")}>Machines</button>
-              <button onClick={() => setPage("calc")}>Calculations</button>
-            </nav>
-          </header>
+          <span
+            style={{
+              fontFamily: "var(--mono)",
+              fontSize: 12,
+              color: "var(--text3)",
+            }}
+          >
+            {t.toLocaleDateString("sv-SE")} &nbsp;{" "}
+            {t.toLocaleTimeString("sv-SE")}
+          </span>
         );
       }
 
-      function Home() {
+      function StatusBadge({ status }) {
+        const map = {
+          Running: "badge-green",
+          Idle: "badge-blue",
+          Maintenance: "badge-yellow",
+          Fault: "badge-red",
+          "In Progress": "badge-orange",
+          Delivered: "badge-green",
+          Queued: "badge-blue",
+          "On Hold": "badge-yellow",
+          Urgent: "badge-red",
+          High: "badge-orange",
+          Normal: "badge-blue",
+          Low: "badge-blue",
+        };
         return (
-          <div className="card">Welcome to the Plastic Factory System</div>
+          <span className={`badge ${map[status] || "badge-blue"}`}>
+            {status}
+          </span>
         );
       }
 
-      function Dashboard() {
+      function DonutChart({ pct, color, label }) {
+        const r = 50,
+          cx = 60,
+          cy = 60,
+          strokeW = 10;
+        const circ = 2 * Math.PI * r;
+        const dash = (pct / 100) * circ;
+        return (
+          <div className="donut-wrap" style={{ width: 120, height: 120 }}>
+            <svg width="120" height="120" viewBox="0 0 120 120">
+              <circle
+                cx={cx}
+                cy={cy}
+                r={r}
+                fill="none"
+                stroke="var(--border)"
+                strokeWidth={strokeW}
+              />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={r}
+                fill="none"
+                stroke={color}
+                strokeWidth={strokeW}
+                strokeDasharray={`${dash} ${circ}`}
+                strokeLinecap="round"
+                transform="rotate(-90 60 60)"
+              />
+            </svg>
+            <div className="donut-label">
+              <div className="big">{pct}%</div>
+              <div className="small">{label}</div>
+            </div>
+          </div>
+        );
+      }
+
+      function Toast({ msg, onClose }) {
+        useEffect(() => {
+          const t = setTimeout(onClose, 3500);
+          return () => clearTimeout(t);
+        }, []);
+        return (
+          <div className="toast">
+            <div className="toast-title">⚡ System</div>
+            {msg}
+          </div>
+        );
+      }
+
+      // ─── PAGES ────────────────────────────────────────────────────────────────────
+
+      function PageHome({ setPage }) {
+        const running = MACHINES.filter((m) => m.status === "Running").length;
+        const totalOutput = MACHINES.reduce((a, m) => a + m.output, 0);
+        const activeOrders = ORDERS.filter(
+          (o) => o.status === "In Progress",
+        ).length;
+
         return (
           <div>
-            <div className="card">Machine Status: Running</div>
-            <div className="card">Orders Today: 24</div>
-            <div className="card">Inventory Level: Stable</div>
-          </div>
-        );
-      }
+            {/* Hero */}
+            <div
+              style={{
+                marginBottom: 28,
+                position: "relative",
+                overflow: "hidden",
+                borderRadius: 4,
+                background: "linear-gradient(135deg, #14181f 0%, #1a2030 100%)",
+                border: "1px solid var(--border)",
+                padding: "28px 32px",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  top: 0,
+                  right: 0,
+                  width: 300,
+                  height: "100%",
+                  background:
+                    "radial-gradient(ellipse at right, rgba(245,130,10,0.08), transparent 70%)",
+                }}
+              />
+              <div
+                style={{
+                  fontFamily: "var(--mono)",
+                  fontSize: 10,
+                  color: "var(--text3)",
+                  letterSpacing: 2,
+                  marginBottom: 8,
+                }}
+              >
+                POLYCORE MANUFACTURING / HALMSTAD PLANT
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--head)",
+                  fontWeight: 700,
+                  fontSize: 36,
+                  color: "var(--text)",
+                  letterSpacing: 2,
+                  marginBottom: 4,
+                }}
+              >
+                Good Morning, Plant Manager
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--body)",
+                  fontSize: 14,
+                  color: "var(--text2)",
+                  marginBottom: 20,
+                }}
+              >
+                Today is Thursday, 16 April 2026 · Day Shift Active · {running}/
+                {MACHINES.length} machines running
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setPage("dashboard")}
+                >
+                  → Open Dashboard
+                </button>
+                <button
+                  className="btn btn-ghost"
+                  onClick={() => setPage("orders")}
+                >
+                  View Orders
+                </button>
+              </div>
+            </div>
 
-      function Machines({ setSelected }) {
-        const machines = [
-          { id: 1, name: "Extruder X1", status: "Running", power: "220kW" },
-          { id: 2, name: "Molder M2", status: "Stopped", power: "180kW" },
-        ];
-
-        return (
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Status</th>
-                <th>Power</th>
-              </tr>
-            </thead>
-            <tbody>
-              {machines.map((m) => (
-                <tr key={m.id} onClick={() => setSelected(m)}>
-                  <td>{m.name}</td>
-                  <td>{m.status}</td>
-                  <td>{m.power}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        );
-      }
-
-      function MachineDetail({ machine, goBack }) {
-        if (!machine) return null;
-        return (
-          <div className="card">
-            <h3>{machine.name}</h3>
-            <p>Status: {machine.status}</p>
-            <p>Power: {machine.power}</p>
-            <button onClick={() => alert("Started")}>Start</button>
-            <button onClick={() => alert("Stopped")}>Stop</button>
-            <button onClick={goBack}>Back</button>
-          </div>
-        );
-      }
-
-      function Calculations() {
-        const [selected, setSelected] = useState(null);
-        const [result, setResult] = useState(null);
-
-        const formulas = [
-          {
-            name: "Volume",
-            calc: (a, b, c) => a * b * c,
-            fields: ["Length", "Width", "Height"],
-          },
-          {
-            name: "Density",
-            calc: (m, v) => m / v,
-            fields: ["Mass", "Volume"],
-          },
-        ];
-
-        function handleSubmit(e, formula) {
-          e.preventDefault();
-          const data = new FormData(e.target);
-          const values = Array.from(data.values()).map(Number);
-          const res = formula.calc(...values);
-          setResult(res);
-        }
-
-        function savePDF() {
-          const { jsPDF } = window.jspdf;
-          const doc = new jsPDF();
-          doc.text(`Result: ${result}`, 10, 10);
-          doc.save("calculation.pdf");
-        }
-
-        if (!selected) {
-          return (
-            <div>
-              {formulas.map((f) => (
-                <div className="card" key={f.name}>
-                  <button onClick={() => setSelected(f)}>{f.name}</button>
+            {/* Stats */}
+            <div className="stat-grid">
+              {[
+                {
+                  label: "Machines Running",
+                  value: running,
+                  max: MACHINES.length,
+                  sub: `of ${MACHINES.length} total`,
+                  color: "var(--green)",
+                  delta: "+2 vs yesterday",
+                  up: true,
+                },
+                {
+                  label: "Today's Output",
+                  value: totalOutput.toLocaleString(),
+                  sub: "units across all lines",
+                  color: "var(--accent)",
+                  delta: "82% of daily target",
+                  up: true,
+                },
+                {
+                  label: "Active Orders",
+                  value: activeOrders,
+                  sub: `${ORDERS.filter((o) => o.status === "Queued").length} queued`,
+                  color: "var(--blue)",
+                  delta: "1 urgent",
+                  up: false,
+                },
+                {
+                  label: "Avg OEE",
+                  value: "86.4%",
+                  sub: "week rolling average",
+                  color: "var(--yellow)",
+                  delta: "+1.2% vs last week",
+                  up: true,
+                },
+              ].map((s) => (
+                <div key={s.label} className="stat-card">
+                  <div className="accent-bar" style={{ background: s.color }} />
+                  <div className="stat-label">{s.label}</div>
+                  <div className="stat-value" style={{ color: s.color }}>
+                    {s.value}
+                  </div>
+                  <div className="stat-sub">{s.sub}</div>
+                  <div
+                    className={`stat-delta ${s.up ? "delta-up" : "delta-down"}`}
+                  >
+                    {s.up ? "▲" : "▼"} {s.delta}
+                  </div>
                 </div>
               ))}
             </div>
-          );
-        }
 
-        return (
-          <div className="card">
-            <h3>{selected.name}</h3>
-            <form onSubmit={(e) => handleSubmit(e, selected)}>
-              {selected.fields.map((f) => (
-                <input key={f} name={f} placeholder={f} required />
-              ))}
-              <button type="submit">Calculate</button>
-            </form>
-            {result !== null && (
-              <div>
-                <h4>Result: {result}</h4>
-                <button onClick={savePDF}>Save PDF</button>
+            {/* Bottom grid */}
+            <div className="grid-2">
+              {/* Recent alerts */}
+              <div className="card">
+                <div className="card-title">
+                  <span className="dot" style={{ background: "var(--red)" }} />{" "}
+                  Recent Alerts
+                </div>
+                {LOG_ENTRIES.slice(0, 4).map((l, i) => (
+                  <div key={i} className="log-entry">
+                    <span className="log-time">{l.time}</span>
+                    <div className="log-msg">
+                      <span
+                        className="log-tag badge"
+                        style={{
+                          background: `${l.color}22`,
+                          color: l.color,
+                          border: `1px solid ${l.color}44`,
+                        }}
+                      >
+                        {l.tag}
+                      </span>
+                      {l.msg}
+                    </div>
+                  </div>
+                ))}
               </div>
-            )}
-            <button onClick={() => setSelected(null)}>Back</button>
+
+              {/* Active orders snapshot */}
+              <div className="card">
+                <div
+                  className="card-title flex-between"
+                  style={{ marginBottom: 14 }}
+                >
+                  <span>
+                    <span className="dot" />
+                    Active Orders
+                  </span>
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={() => setPage("orders")}
+                  >
+                    View All
+                  </button>
+                </div>
+                {ORDERS.filter(
+                  (o) => o.status === "In Progress" || o.status === "Queued",
+                )
+                  .slice(0, 4)
+                  .map((o) => (
+                    <div
+                      key={o.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "8px 0",
+                        borderBottom: "1px solid rgba(42,48,64,0.5)",
+                      }}
+                    >
+                      <div style={{ flex: 1 }}>
+                        <div
+                          style={{
+                            fontFamily: "var(--mono)",
+                            fontSize: 11,
+                            color: "var(--accent)",
+                            marginBottom: 2,
+                          }}
+                        >
+                          {o.id}
+                        </div>
+                        <div style={{ fontSize: 12, color: "var(--text2)" }}>
+                          {o.customer} — {o.product}
+                        </div>
+                      </div>
+                      <StatusBadge status={o.status} />
+                      <div style={{ textAlign: "right", minWidth: 60 }}>
+                        <div
+                          style={{
+                            fontFamily: "var(--mono)",
+                            fontSize: 11,
+                            color: "var(--text)",
+                          }}
+                        >
+                          {Math.round((o.completed / o.qty) * 100)}%
+                        </div>
+                        <div
+                          style={{
+                            height: 3,
+                            background: "var(--border)",
+                            borderRadius: 2,
+                            marginTop: 3,
+                            width: 60,
+                          }}
+                        >
+                          <div
+                            style={{
+                              height: "100%",
+                              background: "var(--accent)",
+                              borderRadius: 2,
+                              width: `${Math.round((o.completed / o.qty) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
           </div>
         );
       }
 
-      function App() {
-        const [page, setPage] = useState("home");
-        const [selectedMachine, setSelectedMachine] = useState(null);
+      function PageDashboard() {
+        const [tick, setTick] = useState(0);
+        useEffect(() => {
+          const i = setInterval(() => setTick((t) => t + 1), 3000);
+          return () => clearInterval(i);
+        }, []);
+
+        const jitter = (base, range) =>
+          Math.min(100, Math.max(0, base + (Math.random() - 0.5) * range * 2));
 
         return (
           <div>
-            <Navbar setPage={setPage} />
-            <div className="container">
-              {page === "home" && <Home />}
-              {page === "dashboard" && <Dashboard />}
-              {page === "machines" &&
-                (selectedMachine ? (
-                  <MachineDetail
-                    machine={selectedMachine}
-                    goBack={() => setSelectedMachine(null)}
-                  />
-                ) : (
-                  <Machines setSelected={setSelectedMachine} />
-                ))}
-              {page === "calc" && <Calculations />}
+            {/* KPI row */}
+            <div className="stat-grid" style={{ marginBottom: 20 }}>
+              {[
+                {
+                  label: "Total Throughput",
+                  value: "11,440",
+                  sub: "units today",
+                  color: "var(--accent)",
+                },
+                {
+                  label: "Energy Consumption",
+                  value: "228",
+                  sub: "kWh today",
+                  color: "var(--blue)",
+                },
+                {
+                  label: "Reject Rate",
+                  value: "0.74%",
+                  sub: "across all machines",
+                  color: "var(--green)",
+                },
+                {
+                  label: "Plant Availability",
+                  value: "67%",
+                  sub: `${MACHINES.filter((m) => m.status === "Running").length} of ${MACHINES.length} active`,
+                  color: "var(--yellow)",
+                },
+              ].map((s) => (
+                <div key={s.label} className="stat-card">
+                  <div className="accent-bar" style={{ background: s.color }} />
+                  <div className="stat-label">{s.label}</div>
+                  <div
+                    className="stat-value"
+                    style={{ color: s.color, fontSize: 24 }}
+                  >
+                    {s.value}
+                  </div>
+                  <div className="stat-sub">{s.sub}</div>
+                </div>
+              ))}
             </div>
+
+            {/* Machine live gauges */}
+            <div className="card mb-6">
+              <div className="card-title">
+                <span className="dot" /> Live Machine Telemetry
+              </div>
+              {MACHINES.filter((m) => m.status === "Running").map((m) => (
+                <div
+                  key={m.id}
+                  style={{
+                    marginBottom: 16,
+                    paddingBottom: 16,
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: 8,
+                    }}
+                  >
+                    <div>
+                      <span
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 10,
+                          color: "var(--accent)",
+                          marginRight: 10,
+                        }}
+                      >
+                        {m.id}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--head)",
+                          fontWeight: 600,
+                          fontSize: 14,
+                          color: "var(--text)",
+                        }}
+                      >
+                        {m.name}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: 12,
+                        fontFamily: "var(--mono)",
+                        fontSize: 11,
+                        color: "var(--text3)",
+                      }}
+                    >
+                      <span>
+                        Output:{" "}
+                        <b style={{ color: "var(--text)" }}>
+                          {m.output.toLocaleString()}
+                        </b>{" "}
+                        / {m.target.toLocaleString()}
+                      </span>
+                      <StatusBadge status={m.status} />
+                    </div>
+                  </div>
+                  <div className="gauge-row" style={{ marginBottom: 0 }}>
+                    {[
+                      {
+                        label: "Temp",
+                        val: m.temp,
+                        max: 280,
+                        unit: "°C",
+                        color: "#f5820a",
+                      },
+                      {
+                        label: "Pressure",
+                        val: m.pressure,
+                        max: 200,
+                        unit: "bar",
+                        color: "#3a8ef6",
+                      },
+                      {
+                        label: "Speed",
+                        val: m.speed,
+                        max: 100,
+                        unit: "%",
+                        color: "#22c97a",
+                      },
+                      {
+                        label: "Uptime",
+                        val: m.uptime,
+                        max: 100,
+                        unit: "%",
+                        color: "#f5c518",
+                      },
+                    ].map((g) => (
+                      <div key={g.label} className="gauge-item">
+                        <div className="gauge-label">{g.label}</div>
+                        <div className="gauge-bar-track">
+                          <div
+                            className="gauge-bar-fill"
+                            style={{
+                              width: `${(g.val / g.max) * 100}%`,
+                              background: g.color,
+                            }}
+                          />
+                        </div>
+                        <span
+                          className="gauge-value"
+                          style={{ color: g.color }}
+                        >
+                          {g.val}
+                        </span>
+                        <span className="gauge-unit"> {g.unit}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Charts row */}
+            <div className="grid-2">
+              <div className="card">
+                <div className="card-title">
+                  <span className="dot" /> Hourly Output (Today)
+                </div>
+                <div className="bar-chart" style={{ height: 120 }}>
+                  {[
+                    420, 610, 780, 890, 920, 840, 760, 710, 880, 1020, 1100,
+                    980,
+                  ].map((v, i) => (
+                    <div key={i} className="bar-item">
+                      <div className="bar-val" style={{ fontSize: 8 }}>
+                        {i > 8 ? v : ""}
+                      </div>
+                      <div
+                        className="bar"
+                        style={{
+                          background: "var(--accent)",
+                          height: `${(v / 1100) * 100}%`,
+                          opacity: i >= 9 ? 1 : 0.5,
+                        }}
+                      />
+                      <div className="bar-label">
+                        {String(6 + i).padStart(2, "0")}h
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="card">
+                <div className="card-title">
+                  <span className="dot" /> Machine Status Overview
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 24 }}>
+                  <DonutChart
+                    pct={Math.round(
+                      (MACHINES.filter((m) => m.status === "Running").length /
+                        MACHINES.length) *
+                        100,
+                    )}
+                    color="var(--green)"
+                    label="OEE"
+                  />
+                  <div style={{ flex: 1 }}>
+                    {[
+                      {
+                        label: "Running",
+                        count: MACHINES.filter((m) => m.status === "Running")
+                          .length,
+                        color: "var(--green)",
+                      },
+                      {
+                        label: "Idle",
+                        count: MACHINES.filter((m) => m.status === "Idle")
+                          .length,
+                        color: "var(--blue)",
+                      },
+                      {
+                        label: "Maintenance",
+                        count: MACHINES.filter(
+                          (m) => m.status === "Maintenance",
+                        ).length,
+                        color: "var(--yellow)",
+                      },
+                      {
+                        label: "Fault",
+                        count: MACHINES.filter((m) => m.status === "Fault")
+                          .length,
+                        color: "var(--red)",
+                      },
+                    ].map((s) => (
+                      <div
+                        key={s.label}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 8,
+                          marginBottom: 8,
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: 8,
+                            height: 8,
+                            borderRadius: "50%",
+                            background: s.color,
+                            boxShadow: `0 0 6px ${s.color}`,
+                          }}
+                        />
+                        <span
+                          style={{
+                            fontFamily: "var(--body)",
+                            fontSize: 13,
+                            color: "var(--text2)",
+                            flex: 1,
+                          }}
+                        >
+                          {s.label}
+                        </span>
+                        <span
+                          style={{
+                            fontFamily: "var(--mono)",
+                            fontSize: 13,
+                            color: s.color,
+                          }}
+                        >
+                          {s.count}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Event log */}
+            <div className="card" style={{ marginTop: 16 }}>
+              <div className="card-title">
+                <span className="dot" style={{ background: "var(--blue)" }} />{" "}
+                Plant Event Log
+              </div>
+              {LOG_ENTRIES.map((l, i) => (
+                <div key={i} className="log-entry">
+                  <span className="log-time">{l.time}</span>
+                  <div className="log-msg">
+                    <span
+                      className="log-tag badge"
+                      style={{
+                        background: `${l.color}22`,
+                        color: l.color,
+                        border: `1px solid ${l.color}44`,
+                      }}
+                    >
+                      {l.tag}
+                    </span>
+                    {l.msg}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+      }
+
+      function PageOrders() {
+        const [filter, setFilter] = useState("All");
+        const [search, setSearch] = useState("");
+        const tabs = ["All", "In Progress", "Queued", "Delivered", "On Hold"];
+
+        const filtered = ORDERS.filter((o) => {
+          const matchTab = filter === "All" || o.status === filter;
+          const matchSearch =
+            search === "" ||
+            o.id.toLowerCase().includes(search.toLowerCase()) ||
+            o.customer.toLowerCase().includes(search.toLowerCase()) ||
+            o.product.toLowerCase().includes(search.toLowerCase());
+          return matchTab && matchSearch;
+        });
+
+        const totalValue = filtered.reduce((a, o) => a + o.value, 0);
+
+        return (
+          <div>
+            <div className="flex-between mb-6">
+              <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                <div className="pill-tabs">
+                  {tabs.map((t) => (
+                    <div
+                      key={t}
+                      className={`pill-tab ${filter === t ? "active" : ""}`}
+                      onClick={() => setFilter(t)}
+                    >
+                      {t}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                <input
+                  className="search-box"
+                  placeholder="Search orders..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <button className="btn btn-primary btn-sm">+ New Order</button>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4,1fr)",
+                gap: 12,
+                marginBottom: 20,
+              }}
+            >
+              {[
+                { label: "Showing", val: filtered.length, unit: "orders" },
+                {
+                  label: "Total Value",
+                  val: `SEK ${(totalValue / 1000).toFixed(0)}k`,
+                },
+                { label: "On-Time Rate", val: "87%" },
+                { label: "Avg Lead Time", val: "8.4 days" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  style={{
+                    background: "var(--bg2)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 3,
+                    padding: "10px 14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: 9,
+                      color: "var(--text3)",
+                      letterSpacing: 1.5,
+                      textTransform: "uppercase",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {s.label}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--head)",
+                      fontWeight: 700,
+                      fontSize: 20,
+                      color: "var(--text)",
+                    }}
+                  >
+                    {s.val}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="card">
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>Order ID</th>
+                      <th>Customer</th>
+                      <th>Product</th>
+                      <th>Material</th>
+                      <th>Qty</th>
+                      <th>Progress</th>
+                      <th>Due Date</th>
+                      <th>Value (SEK)</th>
+                      <th>Priority</th>
+                      <th>Status</th>
+                      <th>Machine</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((o) => (
+                      <tr key={o.id}>
+                        <td className="mono" style={{ color: "var(--accent)" }}>
+                          {o.id}
+                        </td>
+                        <td>{o.customer}</td>
+                        <td style={{ color: "var(--text2)", fontSize: 12 }}>
+                          {o.product}
+                        </td>
+                        <td className="mono">{o.material}</td>
+                        <td className="mono">{o.qty.toLocaleString()}</td>
+                        <td>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                            }}
+                          >
+                            <div
+                              style={{
+                                width: 60,
+                                height: 4,
+                                background: "var(--border)",
+                                borderRadius: 2,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  height: "100%",
+                                  background:
+                                    o.completed / o.qty > 0.8
+                                      ? "var(--green)"
+                                      : "var(--accent)",
+                                  borderRadius: 2,
+                                  width: `${Math.round((o.completed / o.qty) * 100)}%`,
+                                }}
+                              />
+                            </div>
+                            <span
+                              className="mono"
+                              style={{ fontSize: 10, color: "var(--text3)" }}
+                            >
+                              {Math.round((o.completed / o.qty) * 100)}%
+                            </span>
+                          </div>
+                        </td>
+                        <td className="mono">{o.date}</td>
+                        <td className="mono">{o.value.toLocaleString()}</td>
+                        <td>
+                          <StatusBadge status={o.priority} />
+                        </td>
+                        <td>
+                          <StatusBadge status={o.status} />
+                        </td>
+                        <td
+                          className="mono"
+                          style={{ color: "var(--text3)", fontSize: 11 }}
+                        >
+                          {o.machine}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Timeline */}
+            <div className="card" style={{ marginTop: 16 }}>
+              <div className="card-title">
+                <span className="dot" style={{ background: "var(--blue)" }} />{" "}
+                Recent Order Activity
+              </div>
+              <div className="timeline">
+                {[
+                  {
+                    time: "Today 08:15",
+                    text: "ORD-2024-0441 shipped to Volvo AB — 5,000 pcs delivered",
+                    color: "var(--green)",
+                  },
+                  {
+                    time: "Today 07:30",
+                    text: "ORD-2024-0446 production resumed on THF-001 after brief stop",
+                    color: "var(--accent)",
+                  },
+                  {
+                    time: "Yesterday 16:45",
+                    text: "ORD-2024-0443 PET Bottle batch 2 of 3 completed — 34,200 / 50,000",
+                    color: "var(--blue)",
+                  },
+                  {
+                    time: "Yesterday 09:10",
+                    text: "ORD-2024-0444 placed on hold — INJ-003 in maintenance",
+                    color: "var(--yellow)",
+                  },
+                  {
+                    time: "14 Apr 14:22",
+                    text: "ORD-2024-0447 signed off and shipped to Volvo AB",
+                    color: "var(--green)",
+                  },
+                ].map((e, i) => (
+                  <div key={i} className="timeline-item">
+                    <div
+                      className="timeline-dot"
+                      style={{ color: e.color, background: e.color + "22" }}
+                    />
+                    <div className="timeline-time">{e.time}</div>
+                    <div className="timeline-text">{e.text}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function PageInventory() {
+        const [search, setSearch] = useState("");
+        const filtered = INVENTORY.filter(
+          (m) =>
+            m.material.toLowerCase().includes(search.toLowerCase()) ||
+            m.supplier.toLowerCase().includes(search.toLowerCase()),
+        );
+
+        return (
+          <div>
+            <div className="flex-between mb-6">
+              <div
+                style={{
+                  fontFamily: "var(--mono)",
+                  fontSize: 11,
+                  color: "var(--text3)",
+                }}
+              >
+                {INVENTORY.filter((m) => m.stock < m.reorder).length} materials
+                below reorder point
+              </div>
+              <div style={{ display: "flex", gap: 10 }}>
+                <input
+                  className="search-box"
+                  placeholder="Search materials..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+                <button className="btn btn-primary btn-sm">
+                  + Receive Stock
+                </button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(4,1fr)",
+                gap: 12,
+                marginBottom: 20,
+              }}
+            >
+              {[
+                {
+                  label: "Material Types",
+                  val: INVENTORY.length,
+                  color: "var(--blue)",
+                },
+                {
+                  label: "Below Reorder",
+                  val: INVENTORY.filter((m) => m.stock < m.reorder).length,
+                  color: "var(--red)",
+                },
+                {
+                  label: "Total Stock Value",
+                  val: `SEK ${INVENTORY.reduce((a, m) => a + m.stock * m.price, 0).toFixed(0)}`,
+                  color: "var(--accent)",
+                },
+                { label: "Pending POs", val: 2, color: "var(--yellow)" },
+              ].map((s) => (
+                <div
+                  key={s.label}
+                  style={{
+                    background: "var(--bg2)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 3,
+                    padding: "10px 14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--mono)",
+                      fontSize: 9,
+                      color: "var(--text3)",
+                      letterSpacing: 1.5,
+                      textTransform: "uppercase",
+                      marginBottom: 4,
+                    }}
+                  >
+                    {s.label}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--head)",
+                      fontWeight: 700,
+                      fontSize: 20,
+                      color: s.color,
+                    }}
+                  >
+                    {s.val}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="card">
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Material</th>
+                      <th>Grade</th>
+                      <th>Supplier</th>
+                      <th>Stock</th>
+                      <th>Level</th>
+                      <th>Min / Max</th>
+                      <th>Location</th>
+                      <th>Price/unit</th>
+                      <th>Last Delivery</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((m) => {
+                      const pct = Math.round((m.stock / m.max) * 100);
+                      const low = m.stock < m.reorder;
+                      return (
+                        <tr key={m.id}>
+                          <td
+                            className="mono"
+                            style={{ color: "var(--text3)", fontSize: 10 }}
+                          >
+                            {m.id}
+                          </td>
+                          <td style={{ fontWeight: 600 }}>{m.material}</td>
+                          <td className="mono">{m.grade}</td>
+                          <td style={{ color: "var(--text2)", fontSize: 12 }}>
+                            {m.supplier}
+                          </td>
+                          <td
+                            className="mono"
+                            style={{
+                              color: low ? "var(--red)" : "var(--text)",
+                            }}
+                          >
+                            {m.stock.toLocaleString()} {m.unit}
+                          </td>
+                          <td style={{ minWidth: 100 }}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 6,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  flex: 1,
+                                  height: 5,
+                                  background: "var(--border)",
+                                  borderRadius: 3,
+                                }}
+                              >
+                                <div
+                                  style={{
+                                    height: "100%",
+                                    borderRadius: 3,
+                                    width: `${pct}%`,
+                                    background:
+                                      pct < 30
+                                        ? "var(--red)"
+                                        : pct < 60
+                                          ? "var(--yellow)"
+                                          : "var(--green)",
+                                  }}
+                                />
+                              </div>
+                              <span
+                                style={{
+                                  fontFamily: "var(--mono)",
+                                  fontSize: 10,
+                                  color: "var(--text3)",
+                                  minWidth: 30,
+                                }}
+                              >
+                                {pct}%
+                              </span>
+                            </div>
+                          </td>
+                          <td
+                            className="mono"
+                            style={{ fontSize: 11, color: "var(--text3)" }}
+                          >
+                            {m.min.toLocaleString()} / {m.max.toLocaleString()}
+                          </td>
+                          <td style={{ fontSize: 12, color: "var(--text2)" }}>
+                            {m.location}
+                          </td>
+                          <td className="mono">{m.price} SEK</td>
+                          <td className="mono" style={{ fontSize: 11 }}>
+                            {m.lastDelivery}
+                          </td>
+                          <td>
+                            {low ? (
+                              <span className="badge badge-red">Reorder</span>
+                            ) : pct < 50 ? (
+                              <span className="badge badge-yellow">Low</span>
+                            ) : (
+                              <span className="badge badge-green">OK</span>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        );
+      }
+
+      function CalcModal({ calc, onClose, onSave }) {
+        const [values, setValues] = useState(() =>
+          Object.fromEntries(
+            calc.fields.map((f) => [f.key, parseFloat(f.default)]),
+          ),
+        );
+        const [result, setResult] = useState(null);
+
+        const compute = () => {
+          try {
+            setResult(calc.compute(values));
+          } catch (e) {
+            setResult({ main: "Error", label: "Check inputs", rows: [] });
+          }
+        };
+
+        return (
+          <div
+            className="modal-overlay"
+            onClick={(e) => e.target === e.currentTarget && onClose()}
+          >
+            <div className="modal">
+              <button className="modal-close" onClick={onClose}>
+                ✕
+              </button>
+              <div className="modal-title">
+                {calc.icon} {calc.name}
+              </div>
+              <p
+                style={{
+                  fontFamily: "var(--body)",
+                  fontSize: 13,
+                  color: "var(--text3)",
+                  marginBottom: 20,
+                }}
+              >
+                {calc.desc}
+              </p>
+
+              <div
+                className="input-row"
+                style={{ gridTemplateColumns: "1fr 1fr" }}
+              >
+                {calc.fields.map((f) => (
+                  <div key={f.key} className="input-group">
+                    <div className="input-label">
+                      {f.label}
+                      {f.unit && (
+                        <span style={{ color: "var(--accent)", marginLeft: 4 }}>
+                          [{f.unit}]
+                        </span>
+                      )}
+                    </div>
+                    <input
+                      className="input"
+                      type="number"
+                      step="any"
+                      value={values[f.key]}
+                      onChange={(e) =>
+                        setValues((v) => ({
+                          ...v,
+                          [f.key]: parseFloat(e.target.value) || 0,
+                        }))
+                      }
+                    />
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "flex", gap: 10, marginTop: 6 }}>
+                <button className="btn btn-primary" onClick={compute}>
+                  Calculate
+                </button>
+                <button className="btn btn-ghost" onClick={onClose}>
+                  Cancel
+                </button>
+              </div>
+
+              {result && (
+                <div className="result-box">
+                  <div className="result-title">⟶ {result.label}</div>
+                  <div className="result-main">{result.main}</div>
+                  {result.rows.map((r, i) => (
+                    <div key={i} className="result-row">
+                      <span className="result-key">{r.k}</span>
+                      <span className="result-val">{r.v}</span>
+                    </div>
+                  ))}
+                  <div style={{ marginTop: 14, display: "flex", gap: 8 }}>
+                    <button
+                      className="btn btn-success btn-sm"
+                      onClick={() => onSave(calc.name, result)}
+                    >
+                      💾 Save to PDF
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      }
+
+      function PageCalculations({ showToast }) {
+        const [active, setActive] = useState(null);
+        const [saved, setSaved] = useState([]);
+
+        const handleSave = (name, result) => {
+          setSaved((s) => [
+            ...s,
+            { name, result, ts: new Date().toLocaleTimeString("sv-SE") },
+          ]);
+          setActive(null);
+          showToast(`Calculation "${name}" saved to report queue.`);
+          // Generate simple PDF via print
+          const win = window.open("", "_blank");
+          win.document.write(`
+      <html><head><title>PolyCore Calculation — ${name}</title>
+      <style>body{font-family:monospace;padding:40px;background:#fff;color:#000}
+      h1{font-size:22px}h2{font-size:16px;margin-top:20px}
+      table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:8px 12px;text-align:left}
+      .big{font-size:36px;font-weight:bold;margin:10px 0;color:#e67e00}
+      </style></head><body>
+      <h1>PolyCore Manufacturing — Calculation Report</h1>
+      <p>Date: ${new Date().toLocaleDateString("sv-SE")} ${new Date().toLocaleTimeString("sv-SE")}</p>
+      <h2>${name}</h2>
+      <p class="big">${result.main}</p>
+      <p><b>${result.label}</b></p>
+      <table><tr><th>Parameter</th><th>Value</th></tr>
+      ${result.rows.map((r) => `<tr><td>${r.k}</td><td>${r.v}</td></tr>`).join("")}
+      </table>
+      <p style="margin-top:30px;font-size:11px;color:#999">Generated by PolyCore MES v2.4 — Halmstad Plant</p>
+      </body></html>`);
+          win.document.close();
+          setTimeout(() => win.print(), 500);
+        };
+
+        return (
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--body)",
+                fontSize: 13,
+                color: "var(--text3)",
+                marginBottom: 20,
+              }}
+            >
+              Select a calculation formula to open the parameter form. Results
+              can be saved and exported as PDF.
+            </div>
+
+            {saved.length > 0 && (
+              <div
+                className="card mb-6"
+                style={{ borderColor: "var(--green)" }}
+              >
+                <div className="card-title">
+                  <span
+                    className="dot"
+                    style={{ background: "var(--green)" }}
+                  />{" "}
+                  Saved Calculations ({saved.length})
+                </div>
+                {saved.map((s, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      padding: "6px 0",
+                      borderBottom: "1px solid var(--border)",
+                      fontFamily: "var(--mono)",
+                      fontSize: 12,
+                    }}
+                  >
+                    <span style={{ color: "var(--text2)" }}>{s.name}</span>
+                    <span style={{ color: "var(--accent)" }}>
+                      {s.result.main}
+                    </span>
+                    <span style={{ color: "var(--text3)" }}>{s.ts}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 0,
+              }}
+            >
+              {CALCULATIONS.map((c) => (
+                <div
+                  key={c.id}
+                  className="calc-card"
+                  onClick={() => setActive(c)}
+                >
+                  <div
+                    className="calc-icon"
+                    style={{
+                      background: `var(${c.color})22`,
+                      border: `1px solid var(${c.color})44`,
+                    }}
+                  >
+                    {c.icon}
+                  </div>
+                  <div className="calc-info">
+                    <div className="calc-name">{c.name}</div>
+                    <div className="calc-desc">{c.desc}</div>
+                  </div>
+                  <div style={{ textAlign: "right" }}>
+                    <span className="badge badge-blue calc-tag">{c.tag}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {active && (
+              <CalcModal
+                calc={active}
+                onClose={() => setActive(null)}
+                onSave={handleSave}
+              />
+            )}
+          </div>
+        );
+      }
+
+      function MachineDetail({ machine, onBack, showToast }) {
+        const [actionLog, setActionLog] = useState([]);
+
+        const doAction = (label) => {
+          const entry = { time: new Date().toLocaleTimeString("sv-SE"), label };
+          setActionLog((l) => [entry, ...l]);
+          showToast(`Action "${label}" sent to ${machine.id}.`);
+        };
+
+        const statusColor =
+          {
+            Running: "var(--green)",
+            Idle: "var(--blue)",
+            Maintenance: "var(--yellow)",
+            Fault: "var(--red)",
+          }[machine.status] || "var(--text3)";
+
+        return (
+          <div className="machine-detail">
+            <div className="back-btn" onClick={onBack}>
+              ← Back to Machine List
+            </div>
+
+            <div className="machine-header">
+              <div>
+                <div className="machine-id">
+                  {machine.id} · {machine.type.toUpperCase()}
+                </div>
+                <div className="machine-name">{machine.name}</div>
+                <div className="machine-type">
+                  {machine.location} · Serial: {machine.serial} · Year:{" "}
+                  {machine.year}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 8,
+                }}
+              >
+                <StatusBadge status={machine.status} />
+                <div
+                  style={{
+                    fontFamily: "var(--mono)",
+                    fontSize: 11,
+                    color: "var(--text3)",
+                  }}
+                >
+                  Operator: {machine.operator}
+                </div>
+              </div>
+            </div>
+
+            {/* Live gauges */}
+            {machine.status === "Running" && (
+              <div className="gauge-row mb-6">
+                {[
+                  {
+                    label: "Temperature",
+                    val: machine.temp,
+                    max: 280,
+                    unit: "°C",
+                    color: "var(--accent)",
+                  },
+                  {
+                    label: "Pressure",
+                    val: machine.pressure,
+                    max: 200,
+                    unit: "bar",
+                    color: "var(--blue)",
+                  },
+                  {
+                    label: "Speed",
+                    val: machine.speed,
+                    max: 100,
+                    unit: "%",
+                    color: "var(--green)",
+                  },
+                  {
+                    label: "Uptime",
+                    val: machine.uptime,
+                    max: 100,
+                    unit: "%",
+                    color: "var(--yellow)",
+                  },
+                  {
+                    label: "Output",
+                    val: Math.round((machine.output / machine.target) * 100),
+                    max: 100,
+                    unit: "%",
+                    color: "var(--text)",
+                  },
+                ].map((g) => (
+                  <div key={g.label} className="gauge-item">
+                    <div className="gauge-label">{g.label}</div>
+                    <div className="gauge-bar-track">
+                      <div
+                        className="gauge-bar-fill"
+                        style={{
+                          width: `${(g.val / g.max) * 100}%`,
+                          background: g.color,
+                        }}
+                      />
+                    </div>
+                    <span className="gauge-value" style={{ color: g.color }}>
+                      {g.val}
+                    </span>
+                    <span className="gauge-unit"> {g.unit}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Spec grid */}
+            <div className="card mb-6">
+              <div className="card-title">
+                <span className="dot" /> Machine Specifications
+              </div>
+              <div className="spec-grid">
+                {[
+                  {
+                    k: "Clamp Force",
+                    v:
+                      machine.clampForce > 0
+                        ? machine.clampForce + " t"
+                        : "N/A",
+                  },
+                  {
+                    k: "Shot Weight",
+                    v:
+                      machine.shotWeight > 0
+                        ? machine.shotWeight + " g"
+                        : "N/A",
+                  },
+                  {
+                    k: "Cycle Time",
+                    v: machine.cycleTime > 0 ? machine.cycleTime + " s" : "N/A",
+                  },
+                  {
+                    k: "Mould Temperature",
+                    v: machine.moldTemp > 0 ? machine.moldTemp + " °C" : "N/A",
+                  },
+                  {
+                    k: "Cooling Time",
+                    v:
+                      machine.coolingTime > 0
+                        ? machine.coolingTime + " s"
+                        : "N/A",
+                  },
+                  {
+                    k: "Plasticizing Time",
+                    v:
+                      machine.plasticizingTime > 0
+                        ? machine.plasticizingTime + " s"
+                        : "N/A",
+                  },
+                  { k: "Active Material", v: machine.material },
+                  { k: "Active Mould", v: machine.mold },
+                  { k: "Total Cycles", v: machine.cycles.toLocaleString() },
+                  {
+                    k: "Today Output",
+                    v: machine.output.toLocaleString() + " pcs",
+                  },
+                  { k: "Target", v: machine.target.toLocaleString() + " pcs" },
+                  { k: "Rejects Today", v: machine.rejects },
+                  { k: "Energy Today", v: machine.energyKWh + " kWh" },
+                  { k: "Last Maintenance", v: machine.lastMaint },
+                  { k: "Next Maintenance", v: machine.nextMaint },
+                ].map((s) => (
+                  <div key={s.k} className="spec-item">
+                    <div className="spec-key">{s.k}</div>
+                    <div className="spec-val">{s.v}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Barrel temperature profile */}
+            {machine.barrelTemp && machine.barrelTemp.some((t) => t > 0) && (
+              <div className="card mb-6">
+                <div className="card-title">
+                  <span className="dot" style={{ background: "var(--red)" }} />{" "}
+                  Barrel Temperature Profile
+                </div>
+                <div
+                  style={{ display: "flex", gap: 12, alignItems: "flex-end" }}
+                >
+                  {machine.barrelTemp.map((t, i) => (
+                    <div key={i} style={{ flex: 1, textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 11,
+                          color: "var(--accent)",
+                          marginBottom: 4,
+                        }}
+                      >
+                        {t}°C
+                      </div>
+                      <div
+                        style={{
+                          height: 60,
+                          background: "var(--border)",
+                          borderRadius: 3,
+                          position: "relative",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <div
+                          style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: `${(t / 300) * 100}%`,
+                            background: `linear-gradient(to top, var(--red), var(--accent))`,
+                          }}
+                        />
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 9,
+                          color: "var(--text3)",
+                          marginTop: 4,
+                        }}
+                      >
+                        Z{i + 1}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="card mb-6">
+              <div className="card-title">
+                <span className="dot" style={{ background: "var(--blue)" }} />{" "}
+                Machine Actions
+              </div>
+              <div className="action-grid">
+                {[
+                  {
+                    icon: "▶️",
+                    label: "Start Production",
+                    disabled: machine.status === "Running",
+                  },
+                  {
+                    icon: "⏸️",
+                    label: "Pause Machine",
+                    disabled: machine.status !== "Running",
+                  },
+                  { icon: "⏹️", label: "Emergency Stop", disabled: false },
+                  {
+                    icon: "🔧",
+                    label: "Schedule Maintenance",
+                    disabled: false,
+                  },
+                  { icon: "📊", label: "Generate Report", disabled: false },
+                  {
+                    icon: "🔄",
+                    label: "Mould Change",
+                    disabled: machine.status === "Running",
+                  },
+                  {
+                    icon: "⚙️",
+                    label: "Adjust Parameters",
+                    disabled: machine.status !== "Running",
+                  },
+                  { icon: "📡", label: "Diagnostics Run", disabled: false },
+                ].map((a) => (
+                  <div
+                    key={a.label}
+                    className="action-card"
+                    style={
+                      a.disabled ? { opacity: 0.35, cursor: "not-allowed" } : {}
+                    }
+                    onClick={() => !a.disabled && doAction(a.label)}
+                  >
+                    <div className="action-icon">{a.icon}</div>
+                    <div className="action-label">{a.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action log */}
+            {actionLog.length > 0 && (
+              <div className="card">
+                <div className="card-title">
+                  <span
+                    className="dot"
+                    style={{ background: "var(--green)" }}
+                  />{" "}
+                  Action Log
+                </div>
+                {actionLog.map((e, i) => (
+                  <div key={i} className="log-entry">
+                    <span className="log-time">{e.time}</span>
+                    <div className="log-msg">
+                      <span className="log-tag badge badge-blue">action</span>
+                      {e.label} sent to {machine.name}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      function PageMachines({ showToast }) {
+        const [selected, setSelected] = useState(null);
+        const [search, setSearch] = useState("");
+        const [filterType, setFilterType] = useState("All");
+
+        if (selected)
+          return (
+            <MachineDetail
+              machine={selected}
+              onBack={() => setSelected(null)}
+              showToast={showToast}
+            />
+          );
+
+        const types = ["All", ...new Set(MACHINES.map((m) => m.type))];
+        const filtered = MACHINES.filter((m) => {
+          const matchType = filterType === "All" || m.type === filterType;
+          const matchSearch =
+            search === "" ||
+            m.name.toLowerCase().includes(search.toLowerCase()) ||
+            m.id.toLowerCase().includes(search.toLowerCase());
+          return matchType && matchSearch;
+        });
+
+        return (
+          <div>
+            <div className="flex-between mb-6">
+              <div className="pill-tabs">
+                {types.map((t) => (
+                  <div
+                    key={t}
+                    className={`pill-tab ${filterType === t ? "active" : ""}`}
+                    onClick={() => setFilterType(t)}
+                  >
+                    {t}
+                  </div>
+                ))}
+              </div>
+              <input
+                className="search-box"
+                placeholder="Search machines..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+
+            <div className="card" style={{ marginBottom: 20 }}>
+              <div className="table-wrap">
+                <table className="data-table">
+                  <thead>
+                    <tr>
+                      <th>ID</th>
+                      <th>Machine</th>
+                      <th>Type</th>
+                      <th>Status</th>
+                      <th>Operator</th>
+                      <th>Material</th>
+                      <th>Output / Target</th>
+                      <th>Uptime</th>
+                      <th>Temp (°C)</th>
+                      <th>Pressure</th>
+                      <th>Last Maint.</th>
+                      <th>Location</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filtered.map((m) => (
+                      <tr key={m.id} onClick={() => setSelected(m)}>
+                        <td className="mono" style={{ color: "var(--accent)" }}>
+                          {m.id}
+                        </td>
+                        <td style={{ fontWeight: 600 }}>{m.name}</td>
+                        <td style={{ color: "var(--text3)", fontSize: 12 }}>
+                          {m.type}
+                        </td>
+                        <td>
+                          <StatusBadge status={m.status} />
+                        </td>
+                        <td style={{ fontSize: 12, color: "var(--text2)" }}>
+                          {m.operator}
+                        </td>
+                        <td className="mono">{m.material}</td>
+                        <td>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 6,
+                            }}
+                          >
+                            <span className="mono" style={{ fontSize: 11 }}>
+                              {m.output.toLocaleString()} /{" "}
+                              {m.target.toLocaleString()}
+                            </span>
+                            <div
+                              style={{
+                                width: 40,
+                                height: 3,
+                                background: "var(--border)",
+                                borderRadius: 2,
+                              }}
+                            >
+                              <div
+                                style={{
+                                  height: "100%",
+                                  background: "var(--accent)",
+                                  borderRadius: 2,
+                                  width: `${m.target > 0 ? Math.round((m.output / m.target) * 100) : 0}%`,
+                                }}
+                              />
+                            </div>
+                          </div>
+                        </td>
+                        <td>
+                          <span
+                            className="mono"
+                            style={{
+                              color:
+                                m.uptime > 80
+                                  ? "var(--green)"
+                                  : m.uptime > 50
+                                    ? "var(--yellow)"
+                                    : "var(--red)",
+                            }}
+                          >
+                            {m.uptime > 0 ? m.uptime + "%" : "—"}
+                          </span>
+                        </td>
+                        <td
+                          className="mono"
+                          style={{
+                            color:
+                              m.temp > 0 ? "var(--accent)" : "var(--text3)",
+                          }}
+                        >
+                          {m.temp > 0 ? m.temp : "—"}
+                        </td>
+                        <td className="mono" style={{ fontSize: 12 }}>
+                          {m.pressure > 0 ? m.pressure + " bar" : "—"}
+                        </td>
+                        <td
+                          className="mono"
+                          style={{ fontSize: 11, color: "var(--text3)" }}
+                        >
+                          {m.lastMaint}
+                        </td>
+                        <td style={{ fontSize: 12, color: "var(--text3)" }}>
+                          {m.location}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Machine cards */}
+            <div className="grid-3">
+              {filtered.map((m) => {
+                const statusColor =
+                  {
+                    Running: "var(--green)",
+                    Idle: "var(--blue)",
+                    Maintenance: "var(--yellow)",
+                    Fault: "var(--red)",
+                  }[m.status] || "var(--text3)";
+                return (
+                  <div
+                    key={m.id}
+                    className="card"
+                    style={{ cursor: "pointer", transition: "all 0.15s" }}
+                    onClick={() => setSelected(m)}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.borderColor = "var(--accent)")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.borderColor = "var(--border)")
+                    }
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        marginBottom: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontFamily: "var(--mono)",
+                          fontSize: 10,
+                          color: "var(--accent)",
+                        }}
+                      >
+                        {m.id}
+                      </div>
+                      <StatusBadge status={m.status} />
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--head)",
+                        fontWeight: 700,
+                        fontSize: 15,
+                        color: "var(--text)",
+                        marginBottom: 2,
+                      }}
+                    >
+                      {m.name}
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--mono)",
+                        fontSize: 10,
+                        color: "var(--text3)",
+                        marginBottom: 12,
+                      }}
+                    >
+                      {m.type} · {m.location}
+                    </div>
+                    {m.status === "Running" && (
+                      <>
+                        <div
+                          style={{
+                            height: 3,
+                            background: "var(--border)",
+                            borderRadius: 2,
+                            marginBottom: 6,
+                          }}
+                        >
+                          <div
+                            style={{
+                              height: "100%",
+                              background: statusColor,
+                              borderRadius: 2,
+                              width: `${Math.round((m.output / m.target) * 100)}%`,
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            fontFamily: "var(--mono)",
+                            fontSize: 10,
+                            color: "var(--text3)",
+                          }}
+                        >
+                          <span>{m.output.toLocaleString()} pcs</span>
+                          <span>
+                            {Math.round((m.output / m.target) * 100)}% of target
+                          </span>
+                        </div>
+                      </>
+                    )}
+                    <div
+                      style={{
+                        marginTop: 10,
+                        display: "flex",
+                        gap: 10,
+                        fontFamily: "var(--mono)",
+                        fontSize: 10,
+                        color: "var(--text3)",
+                      }}
+                    >
+                      {m.temp > 0 && <span>🌡 {m.temp}°C</span>}
+                      {m.pressure > 0 && <span>◈ {m.pressure} bar</span>}
+                      <span>⟳ {m.cycles.toLocaleString()} cycles</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      }
+
+      // ─── ROOT APP ─────────────────────────────────────────────────────────────────
+
+      const PAGES = [
+        { id: "home", label: "Overview", icon: "⬡", section: "main" },
+        { id: "dashboard", label: "Dashboard", icon: "◈", section: "main" },
+        { id: "machines", label: "Machines", icon: "⚙", section: "production" },
+        { id: "orders", label: "Orders", icon: "◻", section: "production" },
+        {
+          id: "inventory",
+          label: "Inventory",
+          icon: "⬢",
+          section: "production",
+        },
+        {
+          id: "calculations",
+          label: "Kalkulationer",
+          icon: "∑",
+          section: "tools",
+        },
+      ];
+
+      const PAGE_TITLES = {
+        home: "Plant Overview",
+        dashboard: "Live Dashboard",
+        machines: "Machine Fleet",
+        orders: "Order Management",
+        inventory: "Inventory Control",
+        calculations: "Kalkulationer",
+      };
+
+      function App() {
+        const [page, setPage] = useState("home");
+        const [toast, setToast] = useState(null);
+
+        const showToast = (msg) => {
+          setToast(msg);
+        };
+
+        const sections = [...new Set(PAGES.map((p) => p.section))];
+
+        return (
+          <div className="app">
+            <aside className="sidebar">
+              <div className="sidebar-logo">
+                <div className="brand">PolyCore</div>
+                <div className="sub">Manufacturing Execution System</div>
+              </div>
+              <nav className="sidebar-nav">
+                {sections.map((sec) => (
+                  <div key={sec}>
+                    <div className="nav-section-label">{sec}</div>
+                    {PAGES.filter((p) => p.section === sec).map((p) => (
+                      <div
+                        key={p.id}
+                        className={`nav-item ${page === p.id ? "active" : ""}`}
+                        onClick={() => setPage(p.id)}
+                      >
+                        <span className="icon">{p.icon}</span>
+                        {p.label}
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </nav>
+              <div className="sidebar-footer">
+                <div>
+                  <span className="status-dot" />
+                  System Online
+                </div>
+                <div style={{ marginTop: 4, color: "var(--text3)" }}>
+                  v2.4.1 · Halmstad
+                </div>
+              </div>
+            </aside>
+
+            <div className="main">
+              <div className="topbar">
+                <div className="topbar-title">{PAGE_TITLES[page]}</div>
+                <div className="topbar-right">
+                  <Clock />
+                  <span className="topbar-badge">DAY SHIFT</span>
+                  <div
+                    style={{
+                      width: 28,
+                      height: 28,
+                      borderRadius: "50%",
+                      background: "var(--accent)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontFamily: "var(--head)",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      color: "#000",
+                      cursor: "pointer",
+                    }}
+                  >
+                    PM
+                  </div>
+                </div>
+              </div>
+              <div className="content">
+                {page === "home" && <PageHome setPage={setPage} />}
+                {page === "dashboard" && <PageDashboard />}
+                {page === "machines" && <PageMachines showToast={showToast} />}
+                {page === "orders" && <PageOrders />}
+                {page === "inventory" && <PageInventory />}
+                {page === "calculations" && (
+                  <PageCalculations showToast={showToast} />
+                )}
+              </div>
+            </div>
+
+            {toast && <Toast msg={toast} onClose={() => setToast(null)} />}
           </div>
         );
       }
