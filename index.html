@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plastic Factory Dashboard</title>
+
+    <!-- React -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  </head>
+
+  <body style="margin: 0; font-family: sans-serif">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const { useState } = React;
+
+      function App() {
+        const [tab, setTab] = useState("dashboard");
+
+        return (
+          <div>
+            <nav
+              style={{
+                display: "flex",
+                gap: "10px",
+                padding: "10px",
+                background: "#222",
+              }}
+            >
+              <button onClick={() => setTab("dashboard")}>Dashboard</button>
+              <button onClick={() => setTab("calculations")}>
+                Calculations
+              </button>
+              <button onClick={() => setTab("machines")}>Machines</button>
+            </nav>
+
+            <div style={{ padding: "20px" }}>
+              {tab === "dashboard" && <Dashboard />}
+              {tab === "calculations" && <Calculations />}
+              {tab === "machines" && <Machines />}
+            </div>
+          </div>
+        );
+      }
+
+      function Dashboard() {
+        return (
+          <div>
+            <h1>Factory Dashboard</h1>
+            <p>Production status overview (demo)</p>
+            <ul>
+              <li>Machines running: 12</li>
+              <li>Active jobs: 5</li>
+              <li>Output today: 3,200 units</li>
+            </ul>
+          </div>
+        );
+      }
+
+      function Calculations() {
+        const [selected, setSelected] = useState(null);
+
+        return (
+          <div>
+            <h1>Calculations</h1>
+
+            {!selected && (
+              <div>
+                <button onClick={() => setSelected("cycle")}>Cycle Time</button>
+                <button onClick={() => setSelected("material")}>
+                  Material Usage
+                </button>
+              </div>
+            )}
+
+            {selected === "cycle" && (
+              <CycleCalc goBack={() => setSelected(null)} />
+            )}
+            {selected === "material" && (
+              <MaterialCalc goBack={() => setSelected(null)} />
+            )}
+          </div>
+        );
+      }
+
+      function CycleCalc({ goBack }) {
+        const [time, setTime] = useState(0);
+        const [output, setOutput] = useState(null);
+
+        return (
+          <div>
+            <h2>Cycle Time Calculator</h2>
+            <input
+              type="number"
+              placeholder="Cycle time (seconds)"
+              onChange={(e) => setTime(e.target.value)}
+            />
+            <button onClick={() => setOutput(3600 / time)}>
+              Calculate / hour
+            </button>
+
+            {output && <p>Output per hour: {output.toFixed(2)}</p>}
+
+            <button onClick={goBack}>Back</button>
+          </div>
+        );
+      }
+
+      function MaterialCalc({ goBack }) {
+        const [weight, setWeight] = useState(0);
+        const [units, setUnits] = useState(0);
+        const [result, setResult] = useState(null);
+
+        return (
+          <div>
+            <h2>Material Usage</h2>
+
+            <input
+              type="number"
+              placeholder="Weight per unit (g)"
+              onChange={(e) => setWeight(e.target.value)}
+            />
+
+            <input
+              type="number"
+              placeholder="Units"
+              onChange={(e) => setUnits(e.target.value)}
+            />
+
+            <button onClick={() => setResult((weight * units) / 1000)}>
+              Calculate kg
+            </button>
+
+            {result && <p>Total material: {result.toFixed(2)} kg</p>}
+
+            <button onClick={goBack}>Back</button>
+          </div>
+        );
+      }
+
+      function Machines() {
+        const [open, setOpen] = useState(null);
+
+        const machines = [
+          {
+            id: 1,
+            name: "Injection Molder A",
+            status: "Running",
+            details: "Temp: 220°C, Pressure: 120 bar",
+          },
+          {
+            id: 2,
+            name: "Extruder B",
+            status: "Idle",
+            details: "Temp: 180°C, Speed: 60 rpm",
+          },
+          {
+            id: 3,
+            name: "Blow Molder C",
+            status: "Maintenance",
+            details: "Next service: 2 days",
+          },
+        ];
+
+        return (
+          <div>
+            <h1>Machines</h1>
+
+            {machines.map((m) => (
+              <div
+                key={m.id}
+                style={{
+                  border: "1px solid #ccc",
+                  margin: "10px 0",
+                  padding: "10px",
+                }}
+              >
+                <div
+                  onClick={() => setOpen(open === m.id ? null : m.id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <strong>{m.name}</strong> - {m.status}
+                </div>
+
+                {open === m.id && (
+                  <div style={{ marginTop: "10px" }}>
+                    <p>{m.details}</p>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<App />);
+    </script>
+  </body>
+</html>
